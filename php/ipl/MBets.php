@@ -27,9 +27,6 @@
 
 		public function valid_team($game, $team) {
 			$retval = false;
-			print ($game[3] . " home<br>");
-			print ($game[4] . " away<br>");
-			print ($team[1] . " team<br>");
 			if (strpos($game[3],$team[1]) !== false || strpos($game[4],$team[1]) !== false ) {
 				$retval = true;
 			}

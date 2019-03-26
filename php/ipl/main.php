@@ -3,6 +3,7 @@
 <?php
 	// Main Page
 	require_once "MIpl.php";
+	require_once "MFuncs.php";
 
 	$year = 2019;
 	if (isset($_GET["year"])) $year = intval($_GET["year"]);
@@ -10,6 +11,9 @@
 	$do_reset = false;
 	if (isset($_GET["reset"])) $do_reset = true;
 
+
+    $do_all_submit = false;
+    if (isset($_GET["all_submit"])) $do_all_submit = true;
 
 	$do_game_submit = false;
 	if (isset($_GET["game_submit"])) $do_game_submit = true;
@@ -28,8 +32,7 @@
 	$do_date_submit = false;
 	if (isset($_GET["date_submit"])) $do_date_submit = true;
 
-	$dt = new DateTime("2019-03-21 00:00:00", new DateTimeZone("America/New_York"));
-	$selected_date = $dt->format("D M d");
+	$selected_date = "";
 	if (isset($_GET["date"])) $selected_date = $_GET["date"];
 
 
@@ -52,11 +55,33 @@
 		$selected_game_id = 0;
 		$selected_user_id = 0;
 		$selected_team_id = 0;
-		$selected_date = $dt->format("D M d");
+		$selected_date = "";
 	}
+
+    if ($do_all_submit== true) {
+        // clear screen
+        $do_date_submit = true;
+        $do_game_submit = true;
+        $do_team_submit = true;
+        $do_user_submit = true;
+    }
 
 	$ipl = new MIpl($year);
 	$ipl->loadData();
+
+    $dt_today = date('D M d');
+    $dt = new DateTime("2019-03-21 00:00:00", new DateTimeZone("America/New_York"));
+    if (strlen($selected_date) <= 0) {
+        $selected_date = $dt_today;
+    }
+
+    if ($selected_game_id == 0) {
+        $games_today = $ipl->mGames->get_by_date($selected_date);
+        if (count($games_today) > 0) {
+            $selected_game_id = $games_today[0][0];
+        }
+    }
+
 ?>
 
 	<table>
@@ -152,6 +177,7 @@
 			</tr>
 			<tr>
 				<td colspan=4>
+                    <input type="submit" name="all_submit" value="All Info">
 					<input type="submit" name="game_submit" value="Games Info">
 					<input type="submit" name="user_submit" value="Users Info">
 					<input type="submit" name="team_submit" value="Games for Team">
@@ -172,119 +198,53 @@
 		</form>
 	</table>
 <?php
-	if ($do_game_submit) {
-		$use_game = $ipl->mGames->get_by_id($selected_game_id);
-		if ($use_game[5] == "Completed") {
-			echo "Game Completed<br>";
-			$num_cols = count($use_game);
-			if ($num_cols > 6) echo "Winning Team: $use_game[6]<br>";
-			if ($num_cols > 7) {
-				echo "Winning Users: ";
-				for ($i=7; $i<count($use_game); $i++) {
-					echo "$use_game[$i]  ";
-				}
-				echo "<br>";
-			}
-		} else {
-			$num_bets = $ipl->mBets->num_bets;
-			for ($i=1; $i<=$num_bets; $i++) {
-				$one_bet = $ipl->mBets->arr[$i];
-				if ($one_bet[1] == $selected_game_id) {
-					$num_cols = count($one_bet);
-					for ($j=2; $j<$num_cols; $j += 3) {
-						$bet_str = $one_bet[$j] . " bet " . $one_bet[$j+1] . " on " . $one_bet[$j+2];
-						echo "$bet_str<br>";
-					}
-				}
-			}
-		}
+    if ($do_date_submit) {
+        $game = $ipl->mGames->get_by_id($selected_game_id);
+        $use_date = $game[1];
+        $ipl->show_games_on_date($use_date);
+    }
+
+    if ($do_game_submit) {
+	    $ipl->show_games_info($selected_game_id);
 	}
 
 	if ($do_user_submit) {
-		$use_user = $ipl->mUsers->get_by_id($selected_user_id);
-		$first_pass = true;
-		for ($i=1; $i<$ipl->mGames->num_games; $i++) {
-			$num_cols = count($ipl->mGames->arr[$i]);
-			if ($num_cols > 7) {
-				// Means we have winning user entries
-				for ($j=7; $j < $num_cols; $j++) {
-					if ($use_user[1] == $ipl->mGames->arr[$i][$j]) {
-						if ($first_pass == true) {
-							echo "Games won by $use_user[1]<p/>";
-							$first_pass = false;
-						}
-						$home_team = $ipl->mGames->arr[$i][3];
-						$away_team = $ipl->mGames->arr[$i][4];
-						$winning_team = $ipl->mGames->arr[$i][6];
-						$game_date = $ipl->mGames->arr[$i][1] . "  " .  $ipl->mGames->arr[$i][2];
-						if (strpos($home_team,$winning_team)!==false) {
-							$winning_game = "**<span id=\"winner\">$home_team</span> vs $away_team on $game_date";
-						} else {
-							$winning_game = "$home_team vs **<span id=\"winner\">$away_team</span> on $game_date";
-						}
-						echo "$winning_game<br>";
-					}
-				}
-			}
-		}
+	    $ipl->show_user_info($selected_user_id);
 	}
 
 	if ($do_team_submit) {
-		$use_team = $ipl->mTeams->get_by_id($selected_team_id);
-		$first_pass = true;
-		for ($i=1; $i<$ipl->mGames->num_games; $i++) {
-			$home_team = $ipl->mGames->arr[$i][3];
-			$away_team = $ipl->mGames->arr[$i][4];
-			$game_date = $ipl->mGames->arr[$i][1] . "  " .  $ipl->mGames->arr[$i][2];
-			if ((strpos($home_team,$use_team[1])!==false) || (strpos($away_team,$use_team[1]) !== false)) {
-				if ($first_pass == true) {
-					echo "<table width=\"50%\">";
-					$first_pass = false;
-				}
-				echo "<tr><td>$game_date</td><td>$home_team</td><td>vs</td><td>$away_team</td></tr>";
-			}
-		}
-		if ($first_pass == false) {
-			echo "</table>";
-		}
-	}
-
-	if ($do_date_submit) {
-		$first_pass = true;
-		for ($i=1; $i<$ipl->mGames->num_games; $i++) {
-			$home_team = $ipl->mGames->arr[$i][3];
-			$away_team = $ipl->mGames->arr[$i][4];
-			$game_date = $ipl->mGames->arr[$i][1] . "  " .  $ipl->mGames->arr[$i][2];
-			if (strpos(trim($game_date), trim($selected_date)) !== false) {
-				if ($first_pass == true) {
-					echo "<table width=\"50%\">";
-					$first_pass = false;
-				}
-				echo "<tr><td>$game_date</td><td>$home_team</td><td>vs</td><td>$away_team</td></tr>";
-			}
-		}
-		if ($first_pass == false) {
-			echo "</table>";
-		}
+	    $ipl->show_team_info($selected_team_id);
 	}
 
 	if($do_place_bet) {
 		$use_user = $ipl->mUsers->get_by_id($selected_user_id); 
 		$use_game = $ipl->mGames->get_by_id($selected_game_id); 
-		$use_team = $ipl->mTeams->get_by_id($selected_team_id); 
+		$use_team = $ipl->mTeams->get_by_id($selected_team_id);
 
-		$ipl->mBets->place_bet($use_game, $use_user, $use_team, $selected_date);
-		$ipl->save();
-		echo "Bet Placed. Select game with Games Info for details";
+        if ($ipl->mBets->place_bet($use_game, $use_user, $use_team, $selected_date) == true) {
+            $ipl->save();
+            $ipl->loadData();
+            echo "<h2>Bet Placed</h2>";
+            $ipl->show_games_info($use_game[0]);
+            $ipl->show_user_info($use_user[0]);
+        } else {
+            echo "<p><b>Invalid selection.</b> Select one of the two teams playing in this game</p>";
+        }
 	}
 
 	if($set_winner) {
 		$use_game = $ipl->mGames->get_by_id($selected_game_id); 
-		$use_team = $ipl->mTeams->get_by_id($selected_team_id); 
+		$use_team = $ipl->mTeams->get_by_id($selected_team_id);
+		$err_string="";
 
-		$ipl->set_winner($use_game, $use_team);
-		$ipl->save();
-		echo "Winner Chosen<br>";
+		if ($ipl->set_winner($use_game, $use_team, $err_string) == true) {
+            $ipl->save();
+            $ipl->loadData();
+            echo "<h2>Winner Chosen</h2>";
+            $ipl->show_games_info($use_game[0]);
+        } else {
+            echo "<p><b>Invalid selection</b>. $err_string</p>";
+        }
 	}
 ?>
 </body>
