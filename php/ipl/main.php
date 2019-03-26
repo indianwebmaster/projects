@@ -163,6 +163,7 @@
 					</select>
 				</td>
 				<td>
+<?php if ($admin_mode == true) { ?>
 					<select name="date">
 						<?php
 							for ($i=0; $i<53; $i++) {
@@ -176,6 +177,7 @@
 							}
 						?>
 					</select>
+<?php } ?>
 				</td>
 			</tr>
 			<tr>
