@@ -94,7 +94,9 @@
 				<td>Game</td>
 				<td>User</td>
 				<td>Team</td>
+<?php if ($admin_mode == true) { ?>
 				<td>Bet Date</td>
+<?php } ?>
 			</tr>
 			<tr>
 				<td>
