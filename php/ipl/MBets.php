@@ -87,10 +87,9 @@
 
 		public function get_winning_users($game, $winning_team, &$winning_users) {
 			$use_bet = array();
-			for ($i=1; $i<$this->num_bets; $i++) {
+			for ($i=1; $i<=$this->num_bets; $i++) {
 				if ($this->arr[$i][1] == $game[0]) {
 					$use_bet = $this->arr[$i];
-					break;
 				}
 			}
 			$num_cols = count($use_bet);

@@ -94,6 +94,8 @@ class MIpl {
                     echo "$use_game[$i]  ";
                 }
                 echo "<br>";
+            } else {
+                echo "Nobody predicted the winner correctly<br>";
             }
         } else {
             echo "<h4>Current Bets</h4>";
