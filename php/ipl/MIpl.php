@@ -82,8 +82,8 @@ class MIpl {
 	}
 
 	public function show_games_info($input_game_id) {
-        echo "<h3>Game Info</h3>";
         $use_game = $this->mGames->get_by_id($input_game_id);
+        echo "<h3>Game Info - " . $use_game[3] . " ----- vs ----- " . $use_game[4] . "</b></h3>";
         if ($use_game[5] == "Completed") {
             echo "<h4>Game Completed</h4>";
             $num_cols = count($use_game);

@@ -183,20 +183,26 @@
 				</td>
 			</tr>
 			<tr>
-				<td colspan=4>
+				<td>
                     <input type="submit" name="all_submit" value="All Info">
 					<input type="submit" name="game_submit" value="Games Info">
+                    <input type="submit" name="date_submit" value="Game on Date">
+                </td>
+                <td>
 					<input type="submit" name="user_submit" value="Users Info">
+                </td>
+                <td>
 					<input type="submit" name="team_submit" value="Games for Team">
-					<input type="submit" name="date_submit" value="Game on Date">
 				</td>
 			</tr>
 <?php if ($admin_mode == true) { ?>
 			<tr>
-				<td colspan=4>
+				<td colspan="3">
                     <input type="hidden" name="admin">
-					<input type="submit" name="place_bet" value="Place bet">
 					<input type="submit" name="set_winner" value="Set Winner">
+                </td>
+                <td>
+                    <input type="submit" name="place_bet" value="Place bet">
 				</td>
 			</tr>
 <?php } ?>
