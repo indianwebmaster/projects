@@ -6,48 +6,51 @@
 	require_once "MFuncs.php";
 
 	$year = 2019;
-	if (isset($_GET["year"])) $year = intval($_GET["year"]);
+	if (isset($_POST["year"])) $year = intval($_POST["year"]);
 
 	$do_reset = false;
-	if (isset($_GET["reset"])) $do_reset = true;
+	if (isset($_POST["reset"])) $do_reset = true;
 
+
+	$admin_mode = false;
+	if (isset($_GET["admin"]) || isset($_POST["admin"])) $admin_mode = true;
 
     $do_all_submit = false;
-    if (isset($_GET["all_submit"])) $do_all_submit = true;
+    if (isset($_POST["all_submit"])) $do_all_submit = true;
 
 	$do_game_submit = false;
-	if (isset($_GET["game_submit"])) $do_game_submit = true;
+	if (isset($_POST["game_submit"])) $do_game_submit = true;
 
 	$selected_game_id = 0;
-	if (isset($_GET["games"])) $selected_game_id = intval($_GET["games"]);
+	if (isset($_POST["games"])) $selected_game_id = intval($_POST["games"]);
 
 
 	$do_user_submit = false;
-	if (isset($_GET["user_submit"])) $do_user_submit = true;
+	if (isset($_POST["user_submit"])) $do_user_submit = true;
 
 	$selected_user_id = 0;
-	if (isset($_GET["users"])) $selected_user_id = intval($_GET["users"]);
+	if (isset($_POST["users"])) $selected_user_id = intval($_POST["users"]);
 
 
 	$do_date_submit = false;
-	if (isset($_GET["date_submit"])) $do_date_submit = true;
+	if (isset($_POST["date_submit"])) $do_date_submit = true;
 
 	$selected_date = "";
-	if (isset($_GET["date"])) $selected_date = $_GET["date"];
+	if (isset($_POST["date"])) $selected_date = $_POST["date"];
 
 
 	$do_team_submit = false;
-	if (isset($_GET["team_submit"])) $do_team_submit = true;
+	if (isset($_POST["team_submit"])) $do_team_submit = true;
 
 	$selected_team_id = 0;
-	if (isset($_GET["teams"])) $selected_team_id = intval($_GET["teams"]);
+	if (isset($_POST["teams"])) $selected_team_id = intval($_POST["teams"]);
 
 
 	$do_place_bet = false;
-	if (isset($_GET["place_bet"])) $do_place_bet = true;
+	if (isset($_POST["place_bet"])) $do_place_bet = true;
 
 	$set_winner = false;
-	if (isset($_GET["set_winner"])) $set_winner = true;
+	if (isset($_POST["set_winner"])) $set_winner = true;
 
 
 	if ($do_reset == true) {
@@ -85,7 +88,7 @@
 ?>
 
 	<table>
-		<form method="get" action="./main.php">
+		<form method="post" action="./main.php">
 			<input type="hidden" name="year" value="2019">
 			<tr>
 				<td>Game</td>
@@ -184,12 +187,15 @@
 					<input type="submit" name="date_submit" value="Game on Date">
 				</td>
 			</tr>
+<?php if ($admin_mode == true) { ?>
 			<tr>
 				<td colspan=4>
+                    <input type="hidden" name="admin">
 					<input type="submit" name="place_bet" value="Place bet">
 					<input type="submit" name="set_winner" value="Set Winner">
 				</td>
 			</tr>
+<?php } ?>
 			<tr>
 				<td colspan=4>
 					<input type="submit" name="reset" value="Reset">
