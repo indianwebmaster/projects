@@ -1,5 +1,24 @@
-<html><head><title>IPL</title></head>
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <style>
+        body{
+            background: url("img/ipl2019.jpg") no-repeat fixed center center;
+        }
+
+    </style>
+    <title>IPL</title>
+</head>
 <body>
+<div class="container">
+    <table border="1" width="100%"><tr height="800em"><td align="center" valign="top">
 <?php
 	// Main Page
 	require_once "MIpl.php";
@@ -87,7 +106,7 @@
 
 ?>
 
-	<table>
+	<table width="100%">
 		<form method="post" action="./main.php">
 			<input type="hidden" name="year" value="2019">
 			<tr>
@@ -184,15 +203,15 @@
 			</tr>
 			<tr>
 				<td>
-                    <input type="submit" name="all_submit" value="All Info">
-					<input type="submit" name="game_submit" value="Games Info">
-                    <input type="submit" name="date_submit" value="Game on Date">
+                    <input type="submit" class="btn btn-primary" name="all_submit" value="All Info">
+					<input type="submit" class="btn btn-success" name="game_submit" value="Game Info">
+                    <input type="submit" class="btn btn-success" name="date_submit" value="Game on Date">
                 </td>
                 <td>
-					<input type="submit" name="user_submit" value="Users Info">
+					<input type="submit" class="btn btn-info" name="user_submit" value="User Info">
                 </td>
                 <td>
-					<input type="submit" name="team_submit" value="Games for Team">
+					<input type="submit" class="btn btn-warning" name="team_submit" value="Games for Team">
 				</td>
 			</tr>
 <?php if ($admin_mode == true) { ?>
@@ -208,7 +227,7 @@
 <?php } ?>
 			<tr>
 				<td colspan=4>
-					<input type="submit" name="reset" value="Reset">
+					<input type="submit" class="btn btn-dark" name="reset" value="Reset">
 				</td>
 			</tr>
 		</form>
@@ -218,18 +237,22 @@
         $game = $ipl->mGames->get_by_id($selected_game_id);
         $use_date = $game[1];
         $ipl->show_games_on_date($use_date);
+        echo "<hr/>";
     }
 
     if ($do_game_submit) {
 	    $ipl->show_games_info($selected_game_id);
+        echo "<hr/>";
 	}
 
 	if ($do_user_submit) {
 	    $ipl->show_user_info($selected_user_id);
+        echo "<hr/>";
 	}
 
 	if ($do_team_submit) {
 	    $ipl->show_team_info($selected_team_id);
+        echo "<hr/>";
 	}
 
 	if($do_place_bet) {
@@ -263,5 +286,12 @@
         }
 	}
 ?>
+</td></tr></table>
+</div>
 </body>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 </html>

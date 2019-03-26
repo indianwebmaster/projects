@@ -124,7 +124,7 @@ class MIpl {
                     if ($use_user[1] == $use_game[$j]) {
                         if ($first_pass == true) {
                             echo "<h4>Games won</h4>";
-                            echo "<table><tr><th>Game #</th><th>Game Date</th><th>Teams</th></tr>";
+                            echo "<table width=\"100%\"><tr><th>Game #</th><th>Game Date</th><th>Teams</th></tr>";
                             $first_pass = false;
                         }
                         $home_team = $use_game[3];
@@ -159,7 +159,7 @@ class MIpl {
                     $away_team = $game[4];
                     if ($first_pass == true) {
                         echo "<h4>Bets made</h4>";
-                        echo "<table><tr><th>Game #</th><th>Teams</th><th>Your Bet</th><th>On Date</th></tr>";
+                        echo "<table width=\"100%\"><tr><th>Game #</th><th>Teams</th><th>Your Bet</th><th>On Date</th></tr>";
                         $first_pass = false;
                     }
                     echo "<tr><td>$game_id</td><td>$home_team vs $away_team</td><td>$team</td><td>$bet_date</td></tr>";
@@ -181,7 +181,7 @@ class MIpl {
             $game_date = $this->mGames->arr[$i][1] . "  " .  $this->mGames->arr[$i][2];
             if ((MFuncs::substring($home_team,$use_team[1]) == true) || (MFuncs::substring($away_team,$use_team[1]) == true)) {
                 if ($first_pass == true) {
-                    echo "<table width=\"50%\">";
+                    echo "<table width=\"100%\"><tr><th>Game Date</th><th>Home Team</th><th></th><th>Away Team</th></tr>";
                     $first_pass = false;
                 }
                 echo "<tr><td>$game_date</td><td>$home_team</td><td>vs</td><td>$away_team</td></tr>";
