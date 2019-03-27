@@ -79,14 +79,19 @@ class MIpl {
             }
             $col++;
         }
+        $num_cols = count($use_game);
+        while ($col < $num_cols) {
+            array_pop($use_game);   // remove any old winning users
+            $col++;
+        }
 		return true;
 	}
 
 	public function show_games_info($input_game_id) {
         $use_game = $this->mGames->get_by_id($input_game_id);
-        echo "<h3>Game Info - " . $use_game[3] . " ----- vs ----- " . $use_game[4] . "</b></h3>";
+        echo "<b>" . $use_game[3] . " vs " . $use_game[4] . "</b><br>";
         if ($use_game[5] == "Completed") {
-            echo "<h4>Game Completed</h4>";
+            echo "<b>Game Completed</b><br>";
             $num_cols = count($use_game);
             if ($num_cols > 6) echo "Winning Team: $use_game[6]<br>";
             if ($num_cols > 7) {
@@ -99,7 +104,7 @@ class MIpl {
                 echo "Nobody predicted the winner correctly<br>";
             }
         } else {
-            echo "<h4>Current Bets</h4>";
+            echo "<b>Current Bets</b>";
             $num_bets = $this->mBets->num_bets;
             for ($i=1; $i<=$num_bets; $i++) {
                 $one_bet = $this->mBets->arr[$i];
@@ -116,7 +121,6 @@ class MIpl {
 
     public function show_user_info($input_user_id) {
         $use_user = $this->mUsers->get_by_id($input_user_id);
-        echo "<h3>User Info for $use_user[1]</h3>";
         $first_pass = true;
         $total_win_points = 0;
         for ($i=1; $i<=$this->mGames->num_games; $i++) {
@@ -127,8 +131,9 @@ class MIpl {
                 for ($j=7; $j < $num_cols; $j++) {
                     if ($use_user[1] == $use_game[$j]) {
                         if ($first_pass == true) {
-                            echo "<h4>Games won</h4>";
-                            echo "<table width=\"100%\"><tr><th>Game #</th><th>Game Date</th><th>Teams</th><th>Win Points</th></tr>";
+                            echo "<table width=\"100%\"><tr><th colspan='4'>User Info for " . $use_user[1] . "</th></tr>";
+                            echo "<tr><th colspan='4'>Games won</th></tr>";
+                            echo "<tr><th>Game #</th><th>Game Date</th><th>Teams</th><th>Win Points</th></tr>";
                             $first_pass = false;
                         }
                         $home_team = $use_game[3];
@@ -168,8 +173,8 @@ class MIpl {
                     $away_team = $game[4];
                     $game_date = $game[1] . "  " .  $game[2];
                     if ($first_pass == true) {
-                        echo "<h4>Bets made</h4>";
-                        echo "<table width=\"100%\"><tr><th>Game #</th><th>Game Date</th><th>Teams</th><th>Your Bet</th><th>On Date</th></tr>";
+                        echo "<table width=\"100%\"><tr><th colspan='5'>Bets made</th></tr>";
+                        echo "<tr><th>Game #</th><th>Game Date</th><th>Teams</th><th>Your Bet</th><th>On Date</th></tr>";
                         $first_pass = false;
                     }
                     echo "<tr><td>$game_id</td><td>$game_date</td><td>$home_team vs $away_team</td><td>$team</td><td>$bet_date</td></tr>";
@@ -183,7 +188,6 @@ class MIpl {
 
     public function show_team_info($input_team_id) {
         $use_team = $this->mTeams->get_by_id($input_team_id);
-        echo "<h3>Team Info for $use_team[1]</h3>";
         $first_pass = true;
         for ($i=1; $i<=$this->mGames->num_games; $i++) {
             $home_team = $this->mGames->arr[$i][3];
@@ -191,7 +195,8 @@ class MIpl {
             $game_date = $this->mGames->arr[$i][1] . "  " .  $this->mGames->arr[$i][2];
             if ((MFuncs::substring($home_team,$use_team[1]) == true) || (MFuncs::substring($away_team,$use_team[1]) == true)) {
                 if ($first_pass == true) {
-                    echo "<table width=\"100%\"><tr><th>Game Date</th><th>Home Team</th><th></th><th>Away Team</th></tr>";
+                    echo "<table width=\"100%\"><tr><th colspan='3'>Team Info for " . $use_team[1] . "</th></tr>";
+                    echo "<tr><th>Game Date</th><th>Home Team</th><th></th><th>Away Team</th></tr>";
                     $first_pass = false;
                 }
                 echo "<tr><td>$game_date</td><td>$home_team</td><td>vs</td><td>$away_team</td></tr>";
@@ -203,7 +208,6 @@ class MIpl {
     }
 
     public function show_games_on_date($input_date) {
-        echo "<h3>Games on $input_date</h3>";
         $first_pass = true;
         for ($i=1; $i<=$this->mGames->num_games; $i++) {
             $home_team = $this->mGames->arr[$i][3];
@@ -211,10 +215,11 @@ class MIpl {
             $game_date = $this->mGames->arr[$i][1] . "  " .  $this->mGames->arr[$i][2];
             if (MFuncs::substring($game_date, $input_date) == true) {
                 if ($first_pass == true) {
-                    echo "<table width=\"50%\">";
+                    echo "<table width=\"60%%\"><tr><th colspan='2'>Games on $input_date</th></tr>";
+                    echo "<tr><th>Game Date</th><th>Home Team vs Away Team</th></tr>";
                     $first_pass = false;
                 }
-                echo "<tr><td>$game_date</td><td>$home_team</td><td>vs</td><td>$away_team</td></tr>";
+                echo "<tr><td>$game_date</td><td>$home_team vs $away_team</td></tr>";
             }
         }
         if ($first_pass == false) {
@@ -222,24 +227,64 @@ class MIpl {
         }
     }
 
-//    public function get_user_points() {
-//	    $win_users = array();
-//	    $win_points = array();
-//	    for($i=1; $i <= $this->mGames->num_games; $i++) {
-//	        $one_game = $this->mGames->arr[$i];
-//	        $winning_usernames = array();
-//	        if ($this->mGames->get_winning_users($winning_usernames) > 0) {
-//	            foreach ($winning_usernames as $w_username) {
-//	                $user = $this->mUsers->get_by_name($w_username);
-//                    $w_points = $this->mBets->get_winning_points($one_game, $user);
-//
-//                    array_push($win_users, $user);
-//                    array_push($win_points, $w_points);
-//                }
-//            }
-//        }
-//	    $users_points = array();
-//    }
+    public function get_win_points_table() {
+	    $points_table = array();
+	    for ($uid=1; $uid <= $this->mUsers->num_users; $uid++) {
+            $n_user = $uid - 1;
+	        $one_user = $this->mUsers->arr[$uid];
+            $first_pass = true;
+            for ($gid = 1; $gid <= $this->mGames->num_games; $gid++) {
+                $one_game = $this->mGames->arr[$gid];
+                $winning_points = array();
+                $winning_users = array();
+                $num_cols = count($one_game);
+                if ($num_cols > 5 && $one_game[5] == "Completed") {
+                    if ($num_cols > 6) {
+                        $winning_team = $one_game[6];
+                        $this->mBets->get_winning_users($one_game, $winning_team, $winning_users, $winning_points);
+                    }
+                }
+                if (count($winning_users) > 0) {
+                    $i = 0;
+                    foreach ($winning_users as $win_user) {
+                        if ($win_user == $one_user[1]) {
+                            if ($first_pass == true) {
+                                array_push($points_table,array());
+                                array_push($points_table[$n_user], $one_user[1]);
+                                $first_pass = false;
+                            }
+                            array_push($points_table[$n_user], $winning_points[$i]);
+                        }
+                        $i++;
+                    }
+                }
+            }
+            $n_user++;
+        }
+	    return ($points_table);
+    }
+
+    public function show_win_points_table() {
+	    $points_table = $this->get_win_points_table();
+	    $first_pass = true;
+	    foreach ($points_table as $one_points_row) {
+            $total_points = 0;
+            $user = $one_points_row[0];
+            $n_cols = count($one_points_row);
+            for ($i = 1; $i < $n_cols; $i++) {
+                $total_points += intval($one_points_row[$i]);
+            }
+            if ($first_pass == true) {
+                $first_pass = false;
+                echo "<table><tr><th colspan='2'>Current Points Table</th></tr>";
+                echo "<tr><th align='right'>Name</th><th>Total Points</th></tr>";
+            }
+            echo "<tr><td align='right'>$user........</td><td>$total_points</td></tr>";
+        }
+	    if ($first_pass == false) {
+	        echo "</table>";
+        }
+    }
 }
 /*
 $mIpl = new MIpl(2019);

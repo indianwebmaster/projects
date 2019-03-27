@@ -85,7 +85,37 @@
 			return true;
 		}
 
-		public function get_winning_users($game, $winning_team, &$winning_users) {
+		private function calc_winning_points($game_date, $bet_date) {
+            $game_dt = strtotime($game_date);
+            $bet_dt = strtotime($bet_date);
+            $diff_hours = ($game_dt - $bet_dt)/(3600.0);
+            if ($diff_hours > 24) {
+                return 4;
+            } else {
+                return 2;
+            }
+        }
+
+        public function get_winning_points($game, $user) {
+		    $win_points = 0;
+            for ($i=1; $i<=$this->num_bets; $i++) {
+                if ($this->arr[$i][1] == $game[0]) {
+                    $use_bet = $this->arr[$i];
+                }
+            }
+            $num_cols = count($use_bet);
+            for ($i=2; $i < $num_cols; $i += 3) {
+                $bet_user = $use_bet[$i];
+                if (MFuncs::substring($bet_user,$user[1]) == true) {
+                    $bet_date = $use_bet[$i + 2];
+                    $game_date = $game[1];
+                    $win_points = $this->calc_winning_points($game_date, $bet_date);
+                }
+            }
+            return $win_points;
+        }
+
+		public function get_winning_users($game, $winning_team, &$winning_users, &$winning_points) {
 			$use_bet = array();
 			for ($i=1; $i<=$this->num_bets; $i++) {
 				if ($this->arr[$i][1] == $game[0]) {
@@ -95,11 +125,17 @@
 			$num_cols = count($use_bet);
 			for ($i=2; $i < $num_cols; $i += 3) {
 				$bet_team = $use_bet[$i + 1];
-				if ($bet_team == $winning_team[1]) {
+				if ($bet_team == $winning_team) {
+				    $game_date = $game[1];
 					$bet_user = $use_bet[$i];
+                    $bet_date = $use_bet[$i+2];
+                    $win_points = $this->calc_winning_points($game_date, $bet_date);
+
 					array_push($winning_users, $bet_user);
+                    array_push($winning_points, $win_points);
 				}
 			}
 		}
+
 	}
 ?>

@@ -18,7 +18,7 @@
 </head>
 <body>
 <div class="container">
-    <table border="1" width="100%"><tr height="800em"><td align="center" valign="top">
+    <table border="1" width="100%"><tr height="800em"><td align="left" valign="top">
 <?php
 	// Main Page
 	require_once "MIpl.php";
@@ -71,8 +71,11 @@
 	$set_winner = false;
 	if (isset($_POST["set_winner"])) $set_winner = true;
 
+    $show_points_table = false;
+    if (isset($_POST["points_table"])) $show_points_table = true;
 
-	if ($do_reset == true) {
+
+if ($do_reset == true) {
 		// clear screen
 		$selected_game_id = 0;
 		$selected_user_id = 0;
@@ -86,6 +89,7 @@
         $do_game_submit = true;
         $do_team_submit = true;
         $do_user_submit = true;
+        $show_points_table = true;
     }
 
 	$ipl = new MIpl($year);
@@ -203,9 +207,10 @@
 			</tr>
 			<tr>
 				<td>
-                    <input type="submit" class="btn btn-primary" name="all_submit" value="All Info">
-					<input type="submit" class="btn btn-success" name="game_submit" value="Game Info">
-                    <input type="submit" class="btn btn-success" name="date_submit" value="Game on Date">
+                    <input type="submit" class="btn btn-primary" name="all_submit"   value="All Info">
+                    <input type="submit" class="btn btn-primary" name="points_table" value="Show Points Table">
+					<input type="submit" class="btn btn-success" name="game_submit"  value="Game Info">
+                    <input type="submit" class="btn btn-success" name="date_submit"  value="Game on Date">
                 </td>
                 <td>
 					<input type="submit" class="btn btn-info" name="user_submit" value="User Info">
@@ -224,6 +229,10 @@
                     <input type="submit" name="place_bet" value="Place bet">
 				</td>
 			</tr>
+            <tr>
+                <td>
+                </td>
+            </tr>
 <?php } ?>
 			<tr>
 				<td colspan=4>
@@ -233,6 +242,11 @@
 		</form>
 	</table>
 <?php
+    if ($show_points_table) {
+        $ipl->show_win_points_table();
+        echo "<hr/>";
+    }
+
     if ($do_date_submit) {
         $game = $ipl->mGames->get_by_id($selected_game_id);
         $use_date = $game[1];
@@ -285,6 +299,7 @@
             echo "<p><b>Invalid selection</b>. $err_string</p>";
         }
 	}
+
 ?>
 </td></tr></table>
 </div>
