@@ -67,7 +67,8 @@ class MIpl {
         }
 
         $winning_users = array();
-        $this->mBets->get_winning_users($use_game, $team, $winning_users);
+        $winning_points = array();
+        $this->mBets->get_winning_users($use_game, $team, $winning_users, $winning_points);
 
         $col = 7;
         foreach ($winning_users as $winning_user) {
@@ -159,12 +160,13 @@ class MIpl {
                     $game = $this->mGames->get_by_id($game_id);
                     $home_team = $game[3];
                     $away_team = $game[4];
+                    $game_date = $game[1] . "  " .  $game[2];
                     if ($first_pass == true) {
                         echo "<h4>Bets made</h4>";
-                        echo "<table width=\"100%\"><tr><th>Game #</th><th>Teams</th><th>Your Bet</th><th>On Date</th></tr>";
+                        echo "<table width=\"100%\"><tr><th>Game #</th><th>Game Date</th><th>Teams</th><th>Your Bet</th><th>On Date</th></tr>";
                         $first_pass = false;
                     }
-                    echo "<tr><td>$game_id</td><td>$home_team vs $away_team</td><td>$team</td><td>$bet_date</td></tr>";
+                    echo "<tr><td>$game_id</td><td>$game_date</td><td>$home_team vs $away_team</td><td>$team</td><td>$bet_date</td></tr>";
                 }
             }
         }
@@ -213,6 +215,25 @@ class MIpl {
             echo "</table>";
         }
     }
+
+//    public function get_user_points() {
+//	    $win_users = array();
+//	    $win_points = array();
+//	    for($i=1; $i <= $this->mGames->num_games; $i++) {
+//	        $one_game = $this->mGames->arr[$i];
+//	        $winning_usernames = array();
+//	        if ($this->mGames->get_winning_users($winning_usernames) > 0) {
+//	            foreach ($winning_usernames as $w_username) {
+//	                $user = $this->mUsers->get_by_name($w_username);
+//                    $w_points = $this->mBets->get_winning_points($one_game, $user);
+//
+//                    array_push($win_users, $user);
+//                    array_push($win_points, $w_points);
+//                }
+//            }
+//        }
+//	    $users_points = array();
+//    }
 }
 /*
 $mIpl = new MIpl(2019);
