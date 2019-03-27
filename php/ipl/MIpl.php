@@ -118,6 +118,7 @@ class MIpl {
         $use_user = $this->mUsers->get_by_id($input_user_id);
         echo "<h3>User Info for $use_user[1]</h3>";
         $first_pass = true;
+        $total_win_points = 0;
         for ($i=1; $i<=$this->mGames->num_games; $i++) {
             $use_game = $this->mGames->arr[$i];
             $num_cols = count($use_game);
@@ -127,21 +128,26 @@ class MIpl {
                     if ($use_user[1] == $use_game[$j]) {
                         if ($first_pass == true) {
                             echo "<h4>Games won</h4>";
-                            echo "<table width=\"100%\"><tr><th>Game #</th><th>Game Date</th><th>Teams</th></tr>";
+                            echo "<table width=\"100%\"><tr><th>Game #</th><th>Game Date</th><th>Teams</th><th>Win Points</th></tr>";
                             $first_pass = false;
                         }
                         $home_team = $use_game[3];
                         $away_team = $use_game[4];
                         $winning_team = $use_game[6];
                         $game_date = $use_game[1] . "  " .  $use_game[2];
+                        $win_points = intval($this->mBets->get_winning_points($use_game, $use_user));
+                        $total_win_points += $win_points;
                         if (MFuncs::substring($home_team,$winning_team)==true) {
-                            echo "<tr><td>$use_game[0]</td><td>$game_date</td><td>**<span id=\"winner\">$home_team</span> vs $away_team</td></tr>";
+                            echo "<tr><td>$use_game[0]</td><td>$game_date</td><td>**<span id=\"winner\">$home_team</span> vs $away_team</td><td>$win_points</td></tr>";
                         } else {
-                            echo "<tr><td>$use_game[0]</td><td>$game_date</td><td>$home_team vs **<span id=\"winner\">$away_team</span></td></tr>";
+                            echo "<tr><td>$use_game[0]</td><td>$game_date</td><td>$home_team vs **<span id=\"winner\">$away_team</span></td><td>$win_points</td></tr>";
                         }
                     }
                 }
             }
+        }
+        if ($total_win_points > 0) {
+            echo "<tr><td></td><td></td><td><b>Total Win Points --------------------------------</b></td><td><b>$total_win_points</b></td></tr>";
         }
         if ($first_pass == false) {
             echo "</table>";
