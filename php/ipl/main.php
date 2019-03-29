@@ -77,24 +77,16 @@
     $show_upcoming_games = false;
     if (isset($_POST["upcoming_games"])) $show_upcoming_games = true;
 
+    $show_stats = false;
+    if (isset($_POST["stats"])) $show_stats = true;
 
-if ($do_reset == true) {
+    if ($do_reset == true) {
 		// clear screen
 		$selected_game_id = 0;
 		$selected_user_id = 0;
 		$selected_team_id = 0;
 		$selected_date = "";
 	}
-
-    if ($do_all_submit== true) {
-        // clear screen
-        $do_date_submit = false;
-        $do_game_submit = false;
-        $do_team_submit = false;
-        $do_user_submit = false;
-        $show_points_table = true;
-        $show_upcoming_games = true;
-    }
 
 	$ipl = new MIpl($year);
 	$ipl->loadData();
@@ -236,6 +228,7 @@ if ($do_reset == true) {
 			</tr>
             <tr>
                 <td>
+                    <input type="submit" name="stats" value="Show Statistics">
                 </td>
             </tr>
 <?php } ?>
@@ -410,6 +403,11 @@ if ($do_reset == true) {
             echo "</table>";
         }
         echo "<hr/>";
+    }
+
+
+    if ($do_all_submit == true) {
+        view_all_info($ipl);
     }
 
     if ($show_points_table) {
