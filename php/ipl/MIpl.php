@@ -3,6 +3,7 @@ require_once "MUsers.php";
 require_once "MTeams.php";
 require_once "MGames.php";
 require_once "MBets.php";
+
 class MIpl {
 	private $year = 2019;
 	private $users_filepath = "users.dat";
@@ -255,6 +256,39 @@ class MIpl {
         }
 	    return ($points_table);
     }
+
+    public function user_stats($username, &$user_games_won, &$user_user_matches) {
+        $user_games_won = array_fill(0, $this->mUsers->num_users, array_fill(0,1,"Replace_With_mUser"));
+        for ($i=1; $i <= $this->mGames->num_games; $i++) {
+            $game = $this->mGames->arr[$i];
+            if ($game[5] == "Completed") {
+                $num_cols = count($game);
+                for ($j=7; $j<$num_cols; $j++) {
+                    $user = $this->mUsers->get_by_name($game[$j]);
+                    $user_games_won[$user[0] - 1][0] = intval($user[0]);
+                    array_push($user_games_won[$user[0] - 1], $game[0]);
+                }
+            }
+        }
+
+        $user_user_matches = array_fill(0, $this->mUsers->num_users, array_fill(0, $this->mUsers->num_users, 0));
+        foreach ($user_games_won as $compare_user) {
+            $cidx = $compare_user[0]-1;
+            foreach ($user_games_won as $with_user) {
+                $widx = $with_user[0]-1;
+                $cn_cols = count($compare_user);
+                $wn_cols = count($with_user);
+                for ($ci=1; $ci<$cn_cols; $ci++) {
+                    for ($wi=1; $wi<$wn_cols; $wi++) {
+                        if ($compare_user[$ci] == $with_user[$wi]) {
+                            $user_user_matches[$cidx][$widx] += 1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public function get_points_table() {
         $points_table = $this->get_win_points_table();
         $win_points_table = array();
@@ -295,7 +329,22 @@ class MIpl {
             }
         }
         return ($bets_on_game);
-    }}
+    }
+
+    public function get_ipl_points() {
+        $ipl_points = array_fill(0, $this->mTeams->num_teams, array_fill(0,2,0));
+        for ($i=1; $i <= $this->mGames->num_games; $i++) {
+            $one_game = $this->mGames->arr[$i];
+            if ($one_game[5] == "Completed") {
+                $winning_team = $this->mTeams->get_by_name($one_game[6]);
+                $w_idx = $winning_team[0] - 1;
+                $ipl_points[$w_idx][0] += 1;
+                $ipl_points[$w_idx][1] += 2;
+            }
+        }
+        return ($ipl_points);
+    }
+}
 /*
 $mIpl = new MIpl(2019);
 $mIpl->loadData();

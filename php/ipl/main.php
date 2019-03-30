@@ -74,6 +74,9 @@
     $show_points_table = false;
     if (isset($_POST["points_table"])) $show_points_table = true;
 
+    $show_ipl_points_table = false;
+    if (isset($_POST["ipl_points_table"])) $show_ipl_points_table = true;
+
     $show_upcoming_games = false;
     if (isset($_POST["upcoming_games"])) $show_upcoming_games = true;
 
@@ -204,8 +207,10 @@
 			<tr>
 				<td>
                     <input type="submit" class="btn btn-primary" name="all_submit"   value="All Info">
-                    <input type="submit" class="btn btn-primary" name="points_table" value="YaMaVi Points Table">
+                    <input type="submit" class="btn btn-primary" name="points_table" value="YaMaVi Points">
+                    <input type="submit" class="btn btn-primary" name="ipl_points_table" value="IPL Points">
                     <input type="submit" class="btn btn-primary" name="upcoming_games" value="Upcoming games">
+                    <br/>
 					<input type="submit" class="btn btn-success" name="game_submit"  value="Game Info">
                     <input type="submit" class="btn btn-success" name="date_submit"  value="Game on Date">
                 </td>
@@ -242,22 +247,41 @@
 <?php
     function view_all_info($ipl) {
         view_show_points_table($ipl);
+        view_ipl_points_table($ipl);
         view_show_upcoming_games($ipl,5);
     }
 
     function view_show_points_table($ipl) {
-        $first_pass = true;
-        foreach ($ipl->get_points_table() as $win_points) {
-            if ($first_pass == true) {
-                echo "<table><tr><th colspan='2'>YaMaVi Points Table</th></tr>";
-                echo "<tr><th>Player</th><th>Total Points</th></tr>";
-                $first_pass = false;
+        $user_games_won = array();
+        $user_user_matches = array();
+        $ipl->user_stats("Manoj Thakur", $user_games_won, $user_user_matches);
+        $c_user_id = 0;
+
+        $win_points_table = $ipl->get_points_table();
+
+        print("<table border=1><tr>");
+        print("<th><h4>YaMaVi Points</h4></th><th>Total Points</th>");
+        for ($i=1; $i<=$ipl->mUsers->num_users; $i++) {
+            $one_user = $ipl->mUsers->arr[$i];
+            print("<th>$one_user[1]</th>");
+        }
+        print("</tr>");
+
+        foreach ($user_user_matches as $match_user) {
+            $win_points = $win_points_table[$c_user_id][1];
+
+            $c_user = $ipl->mUsers->get_by_id(++$c_user_id);
+
+            $w_user_id = 0;
+            print("<tr><th>$c_user[1]</th>");
+            print("<td>$win_points</td>");
+            foreach ($match_user as $with_user_count) {
+                $w_user = $ipl->mUsers->get_by_id(++$w_user_id+1);
+                print("<td>$with_user_count</td>");
             }
-            echo "<tr><td>". $ipl->mUsers->get_short_name($win_points[0][1]) . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>" . $win_points[1] . "</td></tr>";
+            print("</tr>");
         }
-        if ($first_pass == false) {
-            echo "</table>";
-        }
+        print("</table>");
         echo "<hr/>";
     }
 
@@ -406,12 +430,35 @@
     }
 
 
+    function view_ipl_points_table($ipl) {
+        $team_id = 0;
+        $first_pass = true;
+        foreach ($ipl->get_ipl_points() as $point) {
+            $team_id += 1;
+            $team = $ipl->mTeams->arr[$team_id];
+            if ($first_pass) {
+                print("<table border=1><tr><th colspan=3><h4>IPL Points table</h4></th><tr>");
+                print("<tr><th>Team</th><th>Wins</th><th>Points</th></tr>");
+                $first_pass = false;
+            }
+            print ("<tr><td>$team[1]</td><td>$point[0]</td><td>$point[1]</td></tr>"); 
+        }
+        if ($first_pass == false) {
+            print ("</table>");
+        }
+        echo "<hr/>";
+    }
+    
     if ($do_all_submit == true) {
         view_all_info($ipl);
     }
 
     if ($show_points_table) {
         view_show_points_table($ipl);
+    }
+
+    if ($show_ipl_points_table) {
+        view_ipl_points_table($ipl);
     }
 
     if ($show_upcoming_games) {
@@ -468,6 +515,9 @@
         }
 	}
 
+    if ($show_stats) {
+        // view_ipl_points_table($ipl);
+    }
 ?>
 </td></tr></table>
 </div>
