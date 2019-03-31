@@ -456,6 +456,34 @@
         echo "<hr/>";
     }
     
+    function view_all_completed_games($ipl) {
+        $first_pass = true;
+        for ($i = $ipl->mGames->num_games; $i >= 1; $i--) {
+            $game = $ipl->mGames->arr[$i];
+            if ($ipl->mGames->is_completed($game)) {
+                if ($first_pass) {
+                    print ("<table><tr><th colspan=3>All completed games</th></tr>");
+                    print ("<tr><th>Game Date......................</th><th>Home vs Away</th></tr>");
+                    $first_pass = false;
+                }
+                $game_date = $game[1];
+                $home_team = $game[3];
+                $away_team = $game[4];
+                $winning_team = $game[6];
+                if (MFuncs::substring($winning_team, $home_team) || MFuncs::substring($home_team, $winning_team)) {
+                    $game_str = "**" . $home_team . " vs " . $away_team;
+                } else {
+                    $game_str = $home_team . " vs " . "** " .$away_team;
+                }
+                print("<tr><td>$game_date</td><td>$game_str</td></tr>");
+            }
+        }
+        if ($first_pass == false) {
+            print("</table>");
+        }
+        echo "<hr/>";
+    }
+
     if ($do_all_submit == true) {
         view_all_info($ipl);
     }
@@ -466,6 +494,7 @@
 
     if ($show_ipl_points_table) {
         view_ipl_points_table($ipl);
+        view_all_completed_games($ipl);
     }
 
     if ($show_upcoming_games) {
@@ -523,7 +552,7 @@
 	}
 
     if ($show_stats) {
-        print_r ($ipl->get_win_percentage_by_user()); echo "<br>";
+        view_all_completed_games($ipl);
     }
 ?>
 </td></tr></table>
