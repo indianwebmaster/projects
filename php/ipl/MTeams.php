@@ -25,7 +25,7 @@
         public function get_by_name($team_name) {
 		    $match = array();
 		    for ($i=1; $i <= $this->num_teams; $i++) {
-		        if (MFuncs::substring($this->arr[$i][1], $team_name)) {
+		        if ( MFuncs::substring($this->arr[$i][1], $team_name) || MFuncs::substring($team_name, $this->arr[$i][1]) ) {
 		            $match = $this->arr[$i];
                 }
             }

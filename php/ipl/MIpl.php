@@ -14,6 +14,7 @@ class MIpl {
 	public $mTeams = null;
 	public $mGames = null;
 	public $mBets = null;
+
 	public function __construct($year) {
 		$this->year = $year;
 		$this->users_filepath = "ipl" . $year . DIRECTORY_SEPARATOR  . "users.dat";
@@ -21,6 +22,7 @@ class MIpl {
 		$this->games_filepath = "ipl" . $year . DIRECTORY_SEPARATOR  . "games.dat";
 		$this->bets_filepath = "ipl" . $year . DIRECTORY_SEPARATOR  . "bets.dat";
 	}
+
 	public function loadData() {
 		$this->mUsers = new MUsers();
 		$this->mTeams = new MTeams();
@@ -31,12 +33,14 @@ class MIpl {
 		$this->mGames->load($this->games_filepath);
 		$this->mBets->load($this->bets_filepath);
 	}
+
 	public function save() {
 		$this->mUsers->save($this->users_filepath);
 		$this->mTeams->save($this->teams_filepath);
 		$this->mGames->save($this->games_filepath);
 		$this->mBets->save($this->bets_filepath);
 	}
+
 	public function set_winner($game, $team, &$err_string) {
         // Are teams specified are valid playing in this game?
         if ($this->mBets->valid_team($game, $team) == false) {
@@ -75,6 +79,7 @@ class MIpl {
         }
 		return true;
 	}
+
     public function show_games_info($input_game_id) {
         $use_game = $this->mGames->get_by_id($input_game_id);
         echo "<b>" . $use_game[3] . " vs " . $use_game[4] . "</b><br>";
@@ -106,6 +111,7 @@ class MIpl {
             }
         }
     }
+
 	public function get_winning_team_users($game_id)
     {
         $winning_details = array();
@@ -125,6 +131,7 @@ class MIpl {
         }
         return($winning_details);
     }
+
     public function show_user_info($input_user_id) {
         $use_user = $this->mUsers->get_by_id($input_user_id);
         $first_pass = true;
@@ -190,6 +197,7 @@ class MIpl {
             echo "</table>";
         }
     }
+
     public function show_team_info($input_team_id) {
         $use_team = $this->mTeams->get_by_id($input_team_id);
         $first_pass = true;
@@ -210,6 +218,7 @@ class MIpl {
             echo "</table>";
         }
     }
+
     public function get_games_on_date($input_date) {
 	    $games_on_date = array();
         for ($i=1; $i<=$this->mGames->num_games; $i++) {
@@ -220,6 +229,7 @@ class MIpl {
         }
         return $games_on_date;
     }
+
     public function get_win_points_table() {
 	    $points_table = array();
 	    for ($uid=1; $uid <= $this->mUsers->num_users; $uid++) {
@@ -332,17 +342,46 @@ class MIpl {
     }
 
     public function get_ipl_points() {
-        $ipl_points = array_fill(0, $this->mTeams->num_teams, array_fill(0,2,0));
-        for ($i=1; $i <= $this->mGames->num_games; $i++) {
-            $one_game = $this->mGames->arr[$i];
-            if ($one_game[5] == "Completed") {
-                $winning_team = $this->mTeams->get_by_name($one_game[6]);
-                $w_idx = $winning_team[0] - 1;
-                $ipl_points[$w_idx][0] += 1;
-                $ipl_points[$w_idx][1] += 2;
-            }
+        $ipl_points = array_fill(0, $this->mTeams->num_teams, array_fill(0,3,0));
+        $winners_losers = $this->mGames->get_winners_losers();
+        foreach ($winners_losers as $game_winner_loser) {
+            $winning_team = $this->mTeams->get_by_name($game_winner_loser[1]);
+            $losing_team = $this->mTeams->get_by_name($game_winner_loser[2]);
+            $w_idx = $winning_team[0] - 1;
+            $l_idx = $losing_team[0] - 1;
+            
+            $ipl_points[$w_idx][0] += 1;
+            $ipl_points[$w_idx][1] += 2;
+
+            $ipl_points[$l_idx][2] += 1;
         }
         return ($ipl_points);
+    }
+
+    // num wins by user / num completed games
+    public function get_win_percentage_by_user() {
+        $num_games_completed = 0;
+        $num_user_wins = array_fill(0, $this->mUsers->num_users, 0);
+        $win_percent_by_user = array_fill(0, $this->mUsers->num_users, 0);
+        for ($i = 1; $i <= $this->mGames->num_games; $i++) {
+            $game = $this->mGames->arr[$i];
+            if ($this->mGames->is_completed($game)) {
+                $num_games_completed += 1;
+                $winning_usernames = $this->mGames->get_winning_usernames($game);
+                foreach ($winning_usernames as $winning_username) {
+                    $user = $this->mUsers->get_by_name($winning_username);
+                    $uidx = $user[0] - 1;
+                    $num_user_wins[$uidx] += 1;
+                }
+            }
+        }
+        $uidx = 0;
+        foreach ($num_user_wins as $one_user_wins) {
+            $win_percent = ($one_user_wins * 100) / $num_games_completed;
+            $win_percent_by_user[$uidx] = number_format($win_percent, 2);
+            $uidx++;
+        }
+        return ($win_percent_by_user);
     }
 }
 /*

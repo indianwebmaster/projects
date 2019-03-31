@@ -62,6 +62,53 @@
             }
             return ($upcoming_games);
         }
+
+        public function get_winner_loser($game_id) {
+        	$winner_loser = array_fill(0,2,"");
+        	$game = $this->get_by_id($game_id);
+        	if ($game[5] == "Completed") {
+	        	$home_team = $game[3];
+	        	$away_team = $game[4];
+	        	$winning_team = $game[6];
+        		if (MFuncs::substring($home_team,$winning_team)) {
+        			$winner_loser[0] = $home_team;
+        			$winner_loser[1] = $away_team;
+        		} else {
+        			$winner_loser[0] = $away_team;
+        			$winner_loser[1] = $home_team;
+        		}
+        	}
+        }
+
+        public function get_winners_losers() {
+        	$winners_losers = array();
+        	$idx = 0;
+        	for ($i=1; $i <= $this->num_games; $i++) {
+        		$game = $this->arr[$i];
+	        	if ($game[5] == "Completed") {
+		        	$home_team = $game[3];
+		        	$away_team = $game[4];
+		        	$winning_team = $game[6];
+		        	array_push($winners_losers, array_fill(0,3,""));
+	        		$winners_losers[$idx][0] = $game[0];
+	        		if (MFuncs::substring($home_team,$winning_team)) {
+	        			$winners_losers[$idx][1] = $home_team;
+	        			$winners_losers[$idx][2] = $away_team;
+	        		} else {
+	        			$winners_losers[$idx][1] = $away_team;
+	        			$winners_losers[$idx][2] = $home_team;
+	        		}
+					$idx++;
+	        	}
+        	}
+        	return ($winners_losers);
+        }
+
+        public function is_completed($game) {
+        	if ($game[5] == "Completed") return true;
+        	return false;
+        }
+
 		public function save($data_filepath) {
 			return $this->loadData->save($this->arr, $data_filepath);
 		}

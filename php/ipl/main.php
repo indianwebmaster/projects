@@ -255,31 +255,34 @@
         $user_games_won = array();
         $user_user_matches = array();
         $ipl->user_stats("Manoj Thakur", $user_games_won, $user_user_matches);
-        $c_user_id = 0;
 
         $win_points_table = $ipl->get_points_table();
+        $win_percent_by_user = $ipl->get_win_percentage_by_user();
 
         print("<table border=1><tr>");
-        print("<th><h4>YaMaVi Points</h4></th><th>Total Points</th>");
+        print("<th><h4>YaMaVi Points</h4></th><th>Total Points</th><th>Win %</th>");
         for ($i=1; $i<=$ipl->mUsers->num_users; $i++) {
             $one_user = $ipl->mUsers->arr[$i];
             print("<th>$one_user[1]</th>");
         }
         print("</tr>");
 
+        $c_uidx = 0;
         foreach ($user_user_matches as $match_user) {
-            $win_points = $win_points_table[$c_user_id][1];
+            $win_points = $win_points_table[$c_uidx][1];
+            $c_user = $ipl->mUsers->get_by_id($c_uidx + 1);
 
-            $c_user = $ipl->mUsers->get_by_id(++$c_user_id);
-
-            $w_user_id = 0;
             print("<tr><th>$c_user[1]</th>");
-            print("<td>$win_points</td>");
+            print("<td>$win_points</td><td>". $win_percent_by_user[$c_uidx] ."%</td>");
+
+            $w_user_id = 1;
             foreach ($match_user as $with_user_count) {
-                $w_user = $ipl->mUsers->get_by_id(++$w_user_id+1);
+                $w_user = $ipl->mUsers->get_by_id($w_user_id);
                 print("<td>$with_user_count</td>");
+                $w_user_id += 1;
             }
             print("</tr>");
+            $c_uidx += 1;
         }
         print("</table>");
         echo "<hr/>";
@@ -368,14 +371,18 @@
     function view_user_info($ipl, $input_user_id) {
         $first_pass = true;
         $total_win_points = 0;
+
+        $win_percent_by_user = $ipl->get_win_percentage_by_user();
+
         $use_user = $ipl->mUsers->get_by_id($input_user_id);
+        $uidx = $use_user[0] - 1;
         for ($i=$ipl->mGames->num_games; $i>=1; $i--) {
             $use_game = $ipl->mGames->arr[$i];
             foreach ($ipl->mGames->get_winning_usernames($use_game) as $winning_username) {
                 if ($winning_username == $use_user[1]) {
                     if ($first_pass == true) {
                         echo "<table width=\"100%\"><tr><th colspan='4'>User Info for " . $use_user[1] . "</th></tr>";
-                        echo "<tr><th colspan='4'>Games won</th></tr>";
+                        echo "<tr><th colspan='4'>Games Won (Win Percentage = " . $win_percent_by_user[$uidx] . "%)</th></tr>";
                         echo "<tr><th>Game #</th><th>Game Date</th><th>Teams</th><th>Win Points</th></tr>";
                         $first_pass = false;
                     }
@@ -437,11 +444,11 @@
             $team_id += 1;
             $team = $ipl->mTeams->arr[$team_id];
             if ($first_pass) {
-                print("<table border=1><tr><th colspan=3><h4>IPL Points table</h4></th><tr>");
-                print("<tr><th>Team</th><th>Wins</th><th>Points</th></tr>");
+                print("<table border=1><tr><th colspan=4><h4>IPL Points table</h4></th><tr>");
+                print("<tr><th>Team</th><th>Points</th><th>Wins</th><th>Losses</th></tr>");
                 $first_pass = false;
             }
-            print ("<tr><td>$team[1]</td><td>$point[0]</td><td>$point[1]</td></tr>"); 
+            print ("<tr><td>$team[1]</td><td>$point[1]</td><td>$point[0]</td><td>$point[2]</td></tr>"); 
         }
         if ($first_pass == false) {
             print ("</table>");
@@ -516,7 +523,7 @@
 	}
 
     if ($show_stats) {
-        // view_ipl_points_table($ipl);
+        print_r ($ipl->get_win_percentage_by_user()); echo "<br>";
     }
 ?>
 </td></tr></table>
