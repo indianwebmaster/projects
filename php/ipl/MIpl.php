@@ -82,7 +82,8 @@ class MIpl {
 
     public function show_games_info($input_game_id) {
         $use_game = $this->mGames->get_by_id($input_game_id);
-        echo "<b>" . $use_game[3] . " vs " . $use_game[4] . "</b><br>";
+        $game_str = $this->mGames->get_game_string($use_game);
+        echo "<b>" . $game_str . "</b><br>";
         if ($use_game[5] == "Completed") {
             echo "<b>Game Completed</b><br>";
             $num_cols = count($use_game);
@@ -132,86 +133,23 @@ class MIpl {
         return($winning_details);
     }
 
-    public function show_user_info($input_user_id) {
-        $use_user = $this->mUsers->get_by_id($input_user_id);
-        $first_pass = true;
-        $total_win_points = 0;
-        for ($i=$this->mGames->num_games; $i>=1; $i--) {
-            $use_game = $this->mGames->arr[$i];
-            $num_cols = count($use_game);
-            if ($num_cols > 7) {
-                // Means we have winning user entries
-                for ($j=7; $j < $num_cols; $j++) {
-                    if ($use_user[1] == $use_game[$j]) {
-                        if ($first_pass == true) {
-                            echo "<table width=\"100%\"><tr><th colspan='4'>User Info for " . $use_user[1] . "</th></tr>";
-                            echo "<tr><th colspan='4'>Games won</th></tr>";
-                            echo "<tr><th>Game #</th><th>Game Date</th><th>Teams</th><th>Win Points</th></tr>";
-                            $first_pass = false;
-                        }
-                        $home_team = $use_game[3];
-                        $away_team = $use_game[4];
-                        $winning_team = $use_game[6];
-                        $game_date = $use_game[1] . "  " .  $use_game[2];
-                        $win_points = intval($this->mBets->get_winning_points($use_game, $use_user));
-                        $total_win_points += $win_points;
-                        if (MFuncs::substring($home_team,$winning_team)==true) {
-                            echo "<tr><td>$use_game[0]</td><td>$game_date</td><td>**<span id=\"winner\">$home_team</span> vs $away_team</td><td>$win_points</td></tr>";
-                        } else {
-                            echo "<tr><td>$use_game[0]</td><td>$game_date</td><td>$home_team vs **<span id=\"winner\">$away_team</span></td><td>$win_points</td></tr>";
-                        }
-                    }
-                }
-            }
-        }
-        if ($total_win_points > 0) {
-            echo "<tr><td></td><td></td><td><b>Total Win Points --------------------------------</b></td><td><b>$total_win_points</b></td></tr>";
-        }
-        if ($first_pass == false) {
-            echo "</table>";
-        }
-        $first_pass = true;
-        for ($i=$this->mBets->num_bets; $i>=1; $i--) {
-            $one_bet = $this->mBets->arr[$i];
-            $num_cols = count($one_bet);
-            for ($j = 2; $j < $num_cols; $j += 3) {
-                $user = $one_bet[$j];
-                if (MFuncs::substring($use_user[1],$user,true) == true) {
-                    $game_id = $one_bet[1];
-                    $team = $one_bet[$j + 1];
-                    $bet_date = $one_bet[$j + 2];
-                    $game = $this->mGames->get_by_id($game_id);
-                    $home_team = $game[3];
-                    $away_team = $game[4];
-                    $game_date = $game[1] . "  " .  $game[2];
-                    if ($first_pass == true) {
-                        echo "<table width=\"100%\"><tr><th colspan='5'>Bets made</th></tr>";
-                        echo "<tr><th>Game #</th><th>Game Date</th><th>Teams</th><th>Your Bet</th><th>On Date</th></tr>";
-                        $first_pass = false;
-                    }
-                    echo "<tr><td>$game_id</td><td>$game_date</td><td>$home_team vs $away_team</td><td>$team</td><td>$bet_date</td></tr>";
-                }
-            }
-        }
-        if ($first_pass == false) {
-            echo "</table>";
-        }
-    }
-
     public function show_team_info($input_team_id) {
         $use_team = $this->mTeams->get_by_id($input_team_id);
         $first_pass = true;
         for ($i=1; $i<=$this->mGames->num_games; $i++) {
-            $home_team = $this->mGames->arr[$i][3];
-            $away_team = $this->mGames->arr[$i][4];
-            $game_date = $this->mGames->arr[$i][1] . "  " .  $this->mGames->arr[$i][2];
+            $game = $this->mGames->arr[$i];
+
+            $home_team = $game[3];
+            $away_team = $game[4];
+            $game_date = $game[1] . "  " .  $game[2];
             if ((MFuncs::substring($home_team,$use_team[1]) == true) || (MFuncs::substring($away_team,$use_team[1]) == true)) {
                 if ($first_pass == true) {
-                    echo "<table width=\"100%\"><tr><th colspan='3'>Team Info for " . $use_team[1] . "</th></tr>";
-                    echo "<tr><th>Game Date</th><th>Home Team</th><th></th><th>Away Team</th></tr>";
+                    echo "<table width=\"100%\"><tr><th colspan='2'>Team Info for " . $use_team[1] . "</th></tr>";
+                    echo "<tr><th>Game Date</th><th>Home Team vs Away Team</th></tr>";
                     $first_pass = false;
                 }
-                echo "<tr><td>$game_date</td><td>$home_team</td><td>vs</td><td>$away_team</td></tr>";
+                $game_str = $this->mGames->get_game_string($game);
+                echo "<tr><td>$game_date</td><td>$game_str</td></tr>";
             }
         }
         if ($first_pass == false) {

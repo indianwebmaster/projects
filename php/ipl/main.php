@@ -133,7 +133,7 @@
 							$home_team = $one_game[3];
 							$away_team = $one_game[4];
 
-							$game_str = "$game_date $home_team vs $away_team";
+                            $game_str = $ipl->mGames->get_game_string($one_game);
 
 							if ($game_id == $selected_game_id) {
 								echo "<option value=\"$game_id\" selected>$game_str</option>";
@@ -300,7 +300,8 @@
             foreach ($ipl->get_bets_on_game($game[0]) as $one_bet) {
                 $bets_str .= ($ipl->mUsers->get_short_name($one_bet[0]) . "-" . $one_bet[1] . "-" . $one_bet[2] . "<br>");
             }
-            echo "<tr valign='top'><td>". $game[1] . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>" . $game[3] . " vs " . $game[4] . "</td><td>$bets_str</td></tr>";
+            $game_str = $ipl->mGames->get_game_string($game);
+            echo "<tr valign='top'><td>". $game[1] . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>" . $game_str . "</td><td>$bets_str</td></tr>";
         }
         if ($first_pass == false) {
             echo "</table>";
@@ -316,7 +317,8 @@
                 echo "<tr><th>Game Date</th><th>Home vs Away Team</th></tr>";
                 $first_pass = false;
             }
-            echo "<tr><td>". $game[1] . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>" . $game[3] . " vs " . $game[4] . "</td></tr>";
+            $game_str = $ipl->mGames->get_game_string($game);
+            echo "<tr><td>". $game[1] . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>" . $game_str . "</td></tr>";
         }
         if ($first_pass == false) {
             echo "</table>";
@@ -328,7 +330,8 @@
         $game = $ipl->mGames->get_by_id($game_id);
         $first_pass = true;
         $completed_game = false;
-        echo "<table><tr><th colspan='2'>" . $game[3] . " vs " . $game[4] . "</th></tr>";
+        $game_str = $ipl->mGames->get_game_string($game);
+        echo "<table><tr><th colspan='2'>" . $game_str . "</th></tr>";
         foreach ($ipl->get_winning_team_users($game_id) as $team_users) {
             if ($first_pass == true) {
                 echo "<tr><th>Winning Team</th><th>Winning Users</th></tr>";
@@ -392,11 +395,8 @@
                     $game_date = $use_game[1] . "  " .  $use_game[2];
                     $win_points = intval($ipl->mBets->get_winning_points($use_game, $use_user));
                     $total_win_points += $win_points;
-                    if (MFuncs::substring($home_team,$winning_team)==true) {
-                        echo "<tr><td>$use_game[0]</td><td>$game_date</td><td>**<span id=\"winner\">$home_team</span> vs $away_team</td><td>$win_points</td></tr>";
-                    } else {
-                        echo "<tr><td>$use_game[0]</td><td>$game_date</td><td>$home_team vs **<span id=\"winner\">$away_team</span></td><td>$win_points</td></tr>";
-                    }
+                    $game_str = $ipl->mGames->get_game_string($use_game);
+                    echo "<tr><td>$use_game[0]</td><td>$game_date</td><td>$game_str</td><td>$win_points</td></tr>";
                 }
             }
         }
@@ -426,7 +426,8 @@
                         echo "<tr><th>Game #</th><th>Game Date</th><th>Teams</th><th>Your Bet</th><th>On Date</th></tr>";
                         $first_pass = false;
                     }
-                    echo "<tr><td>$game_id</td><td>$game_date</td><td>$home_team vs $away_team</td><td>$team</td><td>$bet_date</td></tr>";
+                    $game_str = $ipl->mGames->get_game_string($game);
+                    echo "<tr><td>$game_id</td><td>$game_date</td><td>$game_str</td><td>$team</td><td>$bet_date</td></tr>";
                 }
             }
         }
@@ -470,11 +471,7 @@
                 $home_team = $game[3];
                 $away_team = $game[4];
                 $winning_team = $game[6];
-                if (MFuncs::substring($winning_team, $home_team) || MFuncs::substring($home_team, $winning_team)) {
-                    $game_str = "**" . $home_team . " vs " . $away_team;
-                } else {
-                    $game_str = $home_team . " vs " . "** " .$away_team;
-                }
+                $game_str = $ipl->mGames->get_game_string($game);
                 print("<tr><td>$game_date</td><td>$game_str</td></tr>");
             }
         }
@@ -512,7 +509,6 @@
 	}
 
 	if ($do_user_submit) {
-//	    $ipl->show_user_info($selected_user_id);
 	    view_user_info($ipl, $selected_user_id);
 	}
 

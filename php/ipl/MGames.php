@@ -109,6 +109,18 @@
         	return false;
         }
 
+        public function get_game_string($game) {
+            $game_str = $game[3] . " vs " . $game[4];
+            if ($this->is_completed($game)) {
+                if ( (MFuncs::substring($game[3], $game[6])) || (MFuncs::substring($game[6], $game[3])) ) {
+                    $game_str = "**" . $game[3] . " vs " . $game[4];
+                } else {
+                    $game_str = $game[3] . " vs **" . $game[4];
+                }
+            }
+            return ($game_str);
+        }
+        
 		public function save($data_filepath) {
 			return $this->loadData->save($this->arr, $data_filepath);
 		}
