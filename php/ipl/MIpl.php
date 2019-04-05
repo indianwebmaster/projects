@@ -321,6 +321,61 @@ class MIpl {
         }
         return ($win_percent_by_user);
     }
+
+    public function get_user_game_win_points($game, $user) {
+    	$win_points = 0;
+    	foreach ($this->mGames->get_winning_usernames($game) as $winning_username) {
+    		if ($winning_username == $user[1]) {
+    			$win_points = intval($this->mBets->get_winning_points($game, $user));
+    		}
+    	}
+    	return ($win_points);
+    }
+    
+    public function highest_streak_by_user() {
+    	$user_highest_lowest = array_fill(0, $this->mUsers->num_users, array_fill(0, 3, ""));
+    	for ($ui=1; $ui <= $this->mUsers->num_users; $ui++) {
+    		$uidx = ($ui - 1);
+    		$highest_winning_streak = 0;
+    		$highest_losing_streak = 0;
+    		$winning_streak = 0;
+    		$losing_streak = 0;
+    		$last_win_points = -1;
+    		$first_pass = true;
+    		$user = $this->mUsers->arr[$ui];
+    		for ($gi=1; $gi <= $this->mGames->num_games; $gi++) {
+    			$game = $this->mGames->arr[$gi];
+    			if ($this->mGames->is_completed($game)) {
+					$win_points = $this->get_user_game_win_points($game, $user);
+					if ($win_points == 0) {
+						$losing_streak += 1;
+					} else {
+						$winning_streak += 1;
+					}
+					
+					if ($winning_streak > $highest_winning_streak) $highest_winning_streak = $winning_streak;
+					if ($losing_streak > $highest_losing_streak) $highest_losing_streak = $losing_streak;
+
+					$game_str = $this->mGames->get_game_string($game);
+
+					if (($first_pass == true) || ($win_points == $last_win_points)) {
+						$first_pass = false;
+					} else {
+						$winning_streak = 1;
+						$losing_streak = 1;
+					}
+					$last_win_points = $win_points;
+    			}
+    		}
+			if ($winning_streak > $highest_winning_streak) $highest_winning_streak = $winning_streak;
+			if ($losing_streak > $highest_losing_streak) $highest_losing_streak = $losing_streak;
+			
+			$user_highest_lowest[$uidx][0] = $user;
+			$user_highest_lowest[$uidx][1] = $highest_winning_streak;
+			$user_highest_lowest[$uidx][2] = $highest_losing_streak;
+    	}
+    	return ($user_highest_lowest);
+    }
 }
 /*
 $mIpl = new MIpl(2019);
