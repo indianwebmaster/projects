@@ -23,6 +23,7 @@
 	// Main Page
 	require_once "MIpl.php";
 	require_once "MFuncs.php";
+	require_once "bonus.php";
 
 	$year = 2019;
 	if (isset($_GET["year"])) $year = intval($_GET["year"]);
@@ -82,6 +83,9 @@
 
     $show_stats = false;
     if (isset($_GET["stats"])) $show_stats = true;
+    
+    $show_bonus = false;
+    if (isset($_GET["bonus_info"])) $show_bonus = true;
 
     if ($do_reset == true) {
 		// clear screen
@@ -234,6 +238,7 @@
             <tr>
                 <td>
                     <input id="statsBtn" type="submit" name="stats" value="Show Statistics">
+                    <input type="submit" class="btn btn-danger" name="bonus_info"  value="Bonus Info">
                 </td>
             </tr>
 <?php } ?>
@@ -393,6 +398,11 @@
     	return ($game_link);
     }
 
+    function make_team_link($team) {
+    	$team_link = make_link("&team_submit=Games+for+Team&teams=" . $team[0], $team[2]);
+    	return ($team_link);
+    }
+
     function view_user_info($ipl, $input_user_id) {
         $win_percent_by_user = $ipl->get_win_percentage_by_user();
         $use_user = $ipl->mUsers->get_by_id($input_user_id);
@@ -495,6 +505,30 @@
     	}
     	echo "<hr/>";		
     }
+    
+    function view_bonus($ipl) {
+        $first_pass = true;
+        for ($i = 1; $i <= $ipl->mBonus->num_items; $i++) {
+            if ($first_pass) {
+                print ("<table><tr><th colspan=4>Bonus: Current Teams Selected for each user</th></tr>");
+                print ("<tr><th>Player ............. </th><th>Team 1</th><th>Team 2</th><th>Team 3</th><th>Team 4</th></tr>");
+                $first_pass = false;
+            }
+            $bonus = $ipl->mBonus->arr[$i];
+            $user = $ipl->mUsers->get_by_name($bonus[1]);
+            $user_link = make_user_link($user);
+            $team_link = array();
+            for ($j = 0; $j < 4; $j++) {
+                $team = $ipl->mTeams->get_by_short_name($bonus[$j + 2]);
+                array_push($team_link,make_team_link($team));
+            }
+            print ("<tr><td>" . $user_link . "</td><td>" . $team_link[0] . "</td><td>" . $team_link[1] . "</td><td>" . $team_link[2] . "</td><td>" . $team_link[3] . "</td></tr>");
+        }
+    	if ($first_pass == false) {
+    		print ("</table>");
+    	}
+    	echo "<hr/>";		
+    }
 
     if ($do_all_submit == true) {
         view_all_info($ipl);
@@ -575,6 +609,11 @@
 
     if ($show_stats) {
         make_link("&users=2","Yash");
+        $default_mode = false;
+    }
+    
+    if ($show_bonus) {
+        view_bonus($ipl);
         $default_mode = false;
     }
     

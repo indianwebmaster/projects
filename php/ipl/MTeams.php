@@ -32,6 +32,16 @@
             return $match;
         }
 
+        public function get_by_short_name($team_short_name) {
+		    $match = array();
+		    for ($i=1; $i <= $this->num_teams; $i++) {
+		        if ( MFuncs::substring($this->arr[$i][2], $team_short_name) || MFuncs::substring($team_short_name, $this->arr[$i][2]) ) {
+		            $match = $this->arr[$i];
+                }
+            }
+            return $match;
+        }
+
         public function save($data_filepath) {
 			return $this->loadData->save($this->arr, $data_filepath);
 		}

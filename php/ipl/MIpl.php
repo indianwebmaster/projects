@@ -3,6 +3,7 @@ require_once "MUsers.php";
 require_once "MTeams.php";
 require_once "MGames.php";
 require_once "MBets.php";
+require_once "MBonus.php";
 
 class MIpl {
 	private $year = 2019;
@@ -10,10 +11,12 @@ class MIpl {
 	private $teams_filepath = "teams.dat";
 	private $games_filepath = "games.dat";
 	private $bets_filepath = "bets.dat";
+	private $bonus_filepath = "bonus.dat";
 	public $mUsers = null;
 	public $mTeams = null;
 	public $mGames = null;
 	public $mBets = null;
+	public $mBonus = null;
 
 	public function __construct($year) {
 		$this->year = $year;
@@ -21,6 +24,7 @@ class MIpl {
 		$this->teams_filepath = "ipl" . $year . DIRECTORY_SEPARATOR  . "teams.dat";
 		$this->games_filepath = "ipl" . $year . DIRECTORY_SEPARATOR  . "games.dat";
 		$this->bets_filepath = "ipl" . $year . DIRECTORY_SEPARATOR  . "bets.dat";
+		$this->bonus_filepath = "ipl" . $year . DIRECTORY_SEPARATOR  . "bonus.dat";
 	}
 
 	public function loadData() {
@@ -28,10 +32,13 @@ class MIpl {
 		$this->mTeams = new MTeams();
 		$this->mGames = new MGames();
 		$this->mBets = new MBets();
+        $this->mBonus = new MBonus();
+
 		$this->mUsers->load($this->users_filepath);
 		$this->mTeams->load($this->teams_filepath);
 		$this->mGames->load($this->games_filepath);
 		$this->mBets->load($this->bets_filepath);
+		$this->mBonus->load($this->bonus_filepath);
 	}
 
 	public function save() {
@@ -39,6 +46,8 @@ class MIpl {
 		$this->mTeams->save($this->teams_filepath);
 		$this->mGames->save($this->games_filepath);
 		$this->mBets->save($this->bets_filepath);
+		$this->mBonus->save($this->bonus_filepath);
+		
 	}
 
 	public function set_winner($game, $team, &$err_string) {
