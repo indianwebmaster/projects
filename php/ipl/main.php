@@ -132,7 +132,7 @@
 					<select name="games">
 						<?php
 						$num_games = $ipl->mGames->num_games;
-						for ($i=$num_games; $i >= i; $i--) {
+						for ($i=$num_games; $i >= 1; $i--) {
 							$one_game = $ipl->mGames->arr[$i];
 
 							$game_id = $one_game[0];
