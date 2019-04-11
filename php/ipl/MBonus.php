@@ -5,7 +5,7 @@
 	class MBonus {
 		public $arr = array();
 		public $num_items = -1;
-		public $header_string = "Name | Team 1 | Team 2 | Team 3 | Team 4";
+		public $header_string = "Name | Team 1 | Team 2 | Team 3 | Team 4 | Submission_Date";
 		private $loadData= null;
 
 		public function __construct() {

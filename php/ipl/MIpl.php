@@ -385,6 +385,17 @@ class MIpl {
     	}
     	return ($user_highest_lowest);
     }
+    
+    public function get_user_points($user) {
+    	$user_points = 0;
+    	for ($i=1; $i <= $this->mGames->num_games; $i++) {
+    		$game = $this->mGames->arr[$i];
+    		if ($this->mGames->is_completed($game)) {
+    			$user_points += ($this->get_user_game_win_points($game, $user));
+    		}
+    	}
+    	return ($user_points);
+    }
 }
 /*
 $mIpl = new MIpl(2019);

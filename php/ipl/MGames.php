@@ -56,7 +56,7 @@
             for ($i=1; $i<=$this->num_games; $i++) {
                 $game = $this->arr[$i];
                 $game_dt = strtotime($game[1]);
-                if ( ( ($game_dt - $today_dt) > 0) &&  ( ($game_dt - $today_dt) <= ($num_days * 24 * 3600)) ) {
+                if ( ( ($game_dt - $today_dt) >= 0) &&  ( ($game_dt - $today_dt) <= ($num_days * 24 * 3600)) ) {
                     array_push($upcoming_games,$game);
                 }
             }
@@ -120,6 +120,30 @@
             }
             return ($game_str);
         }
+        
+        public function get_game_date_string($game) {
+        	return ($this->get_game_string($game) . " (" . $game[1] . ")");
+        }
+        
+        public function get_home_away_wins() {
+        	$home_wins = array();
+        	$away_wins = array();
+        	for ($i=1; $i <= $this->num_games; $i++) {
+        		$game = $this->arr[$i];
+        		if ($this->is_completed($game)) {
+					$home_team = $game[3];
+					$away_team = $game[4];
+					$winning_team = $game[6];
+					if (MFuncs::substring($home_team,$winning_team)) {
+						array_push($home_wins, $winning_team);
+					} else {
+						array_push($away_wins, $winning_team);
+					}
+				}
+			}
+			$home_away_winners = array('home_wins' => $home_wins, 'away_wins' => $away_wins);
+			return ($home_away_winners);
+		}
         
 		public function save($data_filepath) {
 			return $this->loadData->save($this->arr, $data_filepath);

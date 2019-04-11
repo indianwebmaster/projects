@@ -35,32 +35,35 @@
 	$admin_mode = false;
 	if (isset($_GET["admin"]) || isset($_POST["admin"])) $admin_mode = true;
 
-    $do_all_submit = false;
-    if (isset($_GET["all_submit"])) $do_all_submit = true;
+	$fromlink = false;
+	if (isset($_GET["fromlink"]) || isset($_POST["fromlink"])) $fromlink = true;
 
-	$do_game_submit = false;
-	if (isset($_GET["game_submit"])) $do_game_submit = true;
+    $do_all_info = false;
+    if (isset($_GET["all_info"])) $do_all_info = true;
+
+	$do_game_info = false;
+	if (isset($_GET["game_info"])) $do_game_info = true;
 
 	$selected_game_id = 0;
 	if (isset($_GET["games"])) $selected_game_id = intval($_GET["games"]);
 
 
-	$do_user_submit = false;
-	if (isset($_GET["user_submit"])) $do_user_submit = true;
+	$do_user_info = false;
+	if (isset($_GET["user_info"])) $do_user_info = true;
 
 	$selected_user_id = 0;
 	if (isset($_GET["users"])) $selected_user_id = intval($_GET["users"]);
 
 
-	$do_date_submit = false;
-	if (isset($_GET["date_submit"])) $do_date_submit = true;
+	$do_date_info = false;
+	if (isset($_GET["date_info"])) $do_date_info = true;
 
 	$selected_date = "";
 	if (isset($_GET["date"])) $selected_date = $_GET["date"];
 
 
-	$do_team_submit = false;
-	if (isset($_GET["team_submit"])) $do_team_submit = true;
+	$do_team_info = false;
+	if (isset($_GET["team_info"])) $do_team_info = true;
 
 	$selected_team_id = 0;
 	if (isset($_GET["teams"])) $selected_team_id = intval($_GET["teams"]);
@@ -129,7 +132,7 @@
 					<select name="games">
 						<?php
 						$num_games = $ipl->mGames->num_games;
-						for ($i=1; $i <= $num_games; $i++) {
+						for ($i=$num_games; $i >= i; $i--) {
 							$one_game = $ipl->mGames->arr[$i];
 
 							$game_id = $one_game[0];
@@ -137,7 +140,7 @@
 							$home_team = $one_game[3];
 							$away_team = $one_game[4];
 
-                            $game_str = $ipl->mGames->get_game_string($one_game);
+                            $game_str = $ipl->mGames->get_game_date_string($one_game);
 
 							if ($game_id == $selected_game_id) {
 								echo "<option value=\"$game_id\" selected>$game_str</option>";
@@ -210,19 +213,20 @@
 			</tr>
 			<tr>
 				<td>
-                    <input type="submit" class="btn btn-primary" name="all_submit"   value="All Info">
+                    <input type="submit" class="btn btn-primary" name="all_info"   value="All Info">
                     <input type="submit" class="btn btn-primary" name="points_table" value="YaMaVi Points">
                     <input type="submit" class="btn btn-primary" name="ipl_points_table" value="IPL Points">
                     <input type="submit" class="btn btn-primary" name="upcoming_games" value="Upcoming games">
                     <br/>
-					<input type="submit" class="btn btn-success" name="game_submit"  value="Game Info">
-                    <input type="submit" class="btn btn-success" name="date_submit"  value="Game on Date">
+					<input type="submit" class="btn btn-success" name="game_info"  value="Game Info">
+                    <input type="submit" class="btn btn-success" name="date_info"  value="Game on Date">
+                    <input type="submit" class="btn btn-danger" name="bonus_info"  value="Bonus Info">
                 </td>
                 <td>
-					<input type="submit" class="btn btn-info" name="user_submit" value="User Info">
+					<input type="submit" class="btn btn-info" name="user_info" value="User Info">
                 </td>
                 <td>
-					<input type="submit" class="btn btn-warning" name="team_submit" value="Games for Team">
+					<input type="submit" class="btn btn-warning" name="team_info" value="Team Info">
 				</td>
 			</tr>
 <?php if ($admin_mode == true) { ?>
@@ -238,7 +242,6 @@
             <tr>
                 <td>
                     <input id="statsBtn" type="submit" name="stats" value="Show Statistics">
-                    <input type="submit" class="btn btn-danger" name="bonus_info"  value="Bonus Info">
                 </td>
             </tr>
 <?php } ?>
@@ -250,6 +253,7 @@
 		</form>
 	</table>
 <?php
+/* ***** DEPRECATED BY build_url() *****
     function make_link($add_param, $link_text) {
     	$this_url = $_SERVER['REQUEST_URI'];
 		$base_url = strtok($this_url, "&");
@@ -261,14 +265,15 @@
     	$link_href = "<a href=\"". $new_url . "\">" . $link_text . "</a>";
     	return ($link_href);
     }
+***** DEPRECATED BY build_url() **** */
     
-    function make_user_link($user) {
-    	return make_link("&user_submit=&users=".$user[0], $user[1]);
+    function make_user_link($ipl, $user) {
+    	return build_url($ipl, false, "user_info", $user, $user[1]); 
     }
     
     function view_all_info($ipl) {
         view_show_points_table($ipl);
-        view_ipl_points_table($ipl);
+        echo "<table><tr><td>"; view_ipl_points_table($ipl); echo "</td><td>.......</td><td>"; view_home_away_wins($ipl); echo "</td></tr></table>";
         view_show_upcoming_games($ipl,5);
     }
 
@@ -284,7 +289,7 @@
         print("<th><h4>YaMaVi Points</h4></th><th>Total Points</th><th>Win %</th>");
         for ($i=1; $i<=$ipl->mUsers->num_users; $i++) {
             $one_user = $ipl->mUsers->arr[$i];
-            print("<th>" . make_user_link($one_user) . "</th>");
+            print("<th>" . make_user_link($ipl, $one_user) . "</th>");
         }
         print("</tr>");
 
@@ -293,7 +298,7 @@
             $win_points = $win_points_table[$c_uidx][1];
             $c_user = $ipl->mUsers->get_by_id($c_uidx + 1);
 
-            print("<tr><th>" . make_user_link($c_user) . "</th>");
+            print("<tr><th>" . make_user_link($ipl,$c_user) . "</th>");
             print("<td>$win_points</td><td>". $win_percent_by_user[$c_uidx] ."%</td>");
 
             $w_user_id = 1;
@@ -322,7 +327,8 @@
                 $bets_str .= ($ipl->mUsers->get_short_name($one_bet[0]) . "-" . $one_bet[1] . "-" . $one_bet[2] . "<br>");
             }
             $game_str = $ipl->mGames->get_game_string($game);
-            echo "<tr valign='top'><td>". $game[1] . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>" . $game_str . "</td><td>$bets_str</td></tr>";
+            $game_link = make_game_link($ipl, $game);
+            echo "<tr valign='top'><td>". $game[1] . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>" . $game_link . "</td><td>$bets_str</td></tr>";
         }
         if ($first_pass == false) {
             echo "</table>";
@@ -351,20 +357,24 @@
         $game = $ipl->mGames->get_by_id($game_id);
         $first_pass = true;
         $completed_game = false;
+        $game_date = $game[1] . ' ' . $game[2];
         $game_str = $ipl->mGames->get_game_string($game);
-        echo "<table><tr><th colspan='2'>" . $game_str . "</th></tr>";
+        echo "<table><tr><th colspan='2'>" . $game_str . " (" . $game_date . ")</th></tr>";
         foreach ($ipl->get_winning_team_users($game_id) as $team_users) {
             if ($first_pass == true) {
                 echo "<tr><th>Winning Team</th><th>Winning Users</th></tr>";
                 $first_pass = false;
                 $completed_game = true;
             }
-            echo "<tr><td>" . $team_users[0] . "&nbsp;&nbsp;&nbsp;</td>";
+            $team = $ipl->mTeams->get_by_name($team_users[0]);
+            $team_link = make_team_link($ipl, $team);
+            echo "<tr><td>" . $team_link . "&nbsp;&nbsp;&nbsp;</td>";
             for ($i=1; $i<count($team_users); $i++){
                 if ($i == 1) {
                     echo "<td>";
                 }
-                echo $team_users[$i][1] . " ";
+                $user_link = make_user_link($ipl,$team_users[$i]); 
+                echo $user_link . " ";
             }
             if ($i > 1) {
                 echo "</td>";
@@ -380,10 +390,15 @@
             foreach ($ipl->get_bets_on_game($game_id) as $one_bet) {
                 if ($first_pass == true) {
                     echo "<table><tr><th colspan='3'>Current Bets</th></tr>";
-                    echo "<tr><th>Player</th><th>Team</th><th>Bet Date</th></tr>";
+                    echo "<tr><th>Player................</th><th>Team.....</th><th>Bet Date</th></tr>";
                     $first_pass = false;
                 }
-                echo "<tr><td>" . $one_bet[0] . "</td><td>" . $one_bet[1] . "</td><td>" . $one_bet[2] . "</td></tr>";
+                $user = $ipl->mUsers->get_by_name($one_bet[0]);
+                $user_link = make_user_link($ipl, $user);
+                
+                $team = $ipl->mTeams->get_by_short_name($one_bet[1]);
+                $team_link = make_team_link($ipl, $team, true);
+                echo "<tr><td>" . $user_link . "</td><td>" . $team_link . "</td><td>" . $one_bet[2] . "</td></tr>";
             }
             if ($first_pass == false) {
                 echo "</table>";
@@ -394,13 +409,16 @@
     
     function make_game_link($ipl, $game) {
     	$game_str = $ipl->mGames->get_game_string($game);
-    	$game_link = make_link("&game_submit=Game+Info&games=" . $game[0], $game_str);
+    	$game_link = build_url($ipl, false, "game_info", $game, $game_str); 
     	return ($game_link);
     }
 
-    function make_team_link($team) {
-    	$team_link = make_link("&team_submit=Games+for+Team&teams=" . $team[0], $team[2]);
-    	return ($team_link);
+    function make_team_link($ipl, $team, $short=false) {
+    	if ($short) {
+    		return build_url($ipl, false, "team_info", $team, $team[2]);
+    	} else {
+    		return build_url($ipl, false, "team_info", $team, $team[1]);
+    	}
     }
 
     function view_user_info($ipl, $input_user_id) {
@@ -418,14 +436,15 @@
                 $username = $one_bet[$j];
                 if (MFuncs::substring($use_user[1],$username,true) == true) {
                     $game_id = $one_bet[1];
-                    $team = $one_bet[$j + 1];
+                    $team = $ipl->mTeams->get_by_name($one_bet[$j + 1]);
                     $bet_date = $one_bet[$j + 2];
                     $game = $ipl->mGames->get_by_id($game_id);
                     $home_team = $game[3];
                     $away_team = $game[4];
                     $game_date = $game[1] . "  " .  $game[2];
                     if ($first_pass == true) {
-                        echo "<table width=\"100%\"><tr><th colspan='6'>User Info for " . $use_user[1] . "</th></tr>";
+                        // echo "<table width=\"100%\"><tr><th colspan='6'>User Info for " . $use_user[1] . "</th></tr>";
+                        echo "<table width=\"100%\">";
                         echo "<tr><th colspan='6'>Bets Made & Games Won (Win Percentage = " . $win_percent_by_user[$uidx] . "%)</th></tr>";
                         echo "<tr><th>##..</th><th>Game Date</th><th>Home vs Away Team</th><th>Bet on Team</th><th>Bet Date</th><th>Win Points</th></tr>";
                         $first_pass = false;
@@ -433,7 +452,8 @@
                     $win_points = $ipl->get_user_game_win_points($game, $use_user);
                     $total_win_points += $win_points;
                     $game_link = make_game_link($ipl, $game);
-                    echo "<tr><td>$game_id</td><td>$game_date</td><td>$game_link</td><td>$team</td><td>$bet_date</td><td>$win_points</td></tr>";
+                    $team_link = make_team_link($ipl, $team, true);
+                    echo "<tr><td>$game_id</td><td>$game_date</td><td>$game_link</td><td>$team_link</td><td>$bet_date</td><td>$win_points</td></tr>";
                 }
             }
         }
@@ -451,12 +471,13 @@
         foreach ($ipl->get_ipl_points() as $point) {
             $team_id += 1;
             $team = $ipl->mTeams->arr[$team_id];
+            $team_link = make_team_link($ipl, $team);
             if ($first_pass) {
                 print("<table border=1><tr><th colspan=4><h4>IPL Points table</h4></th><tr>");
                 print("<tr><th>Team</th><th>Points</th><th>Wins</th><th>Losses</th></tr>");
                 $first_pass = false;
             }
-            print ("<tr><td>$team[1]</td><td>$point[1]</td><td>$point[0]</td><td>$point[2]</td></tr>"); 
+            print ("<tr><td>$team_link</td><td>$point[1]</td><td>$point[0]</td><td>$point[2]</td></tr>"); 
         }
         if ($first_pass == false) {
             print ("</table>");
@@ -471,7 +492,7 @@
             if ($ipl->mGames->is_completed($game)) {
                 if ($first_pass) {
                     print ("<table><tr><th colspan=3>All completed games</th></tr>");
-                    print ("<tr><th>Game Date......................</th><th>Home vs Away</th></tr>");
+                    print ("<tr><th>##..</th><th>Game Date......................</th><th>Home vs Away</th></tr>");
                     $first_pass = false;
                 }
                 $game_date = $game[1];
@@ -480,7 +501,7 @@
                 $winning_team = $game[6];
                 $game_str = $ipl->mGames->get_game_string($game);
                 $game_link = make_game_link($ipl, $game);
-                print("<tr><td>$game_date</td><td>$game_link</td></tr>");
+                print("<tr><td>$i</td><td>$game_date</td><td>$game_link</td></tr>");
             }
         }
         if ($first_pass == false) {
@@ -497,7 +518,8 @@
 				print ("<tr><th>Player ............... </th><th>Win Streak</th><th>Loss Streak</th></tr>");
     			$first_pass = false;
     		}
-    		$user_link = make_link("&user_submit=User Info&users=".$user_win_loss_streak[0][0], $user_win_loss_streak[0][1]);
+    		$user_link = make_user_link($ipl,$user_win_loss_streak[0]);
+//    		$user_link = make_link("&user_info=User Info&users=".$user_win_loss_streak[0][0], $user_win_loss_streak[0][1]);
     		print ("<tr><td>" . $user_link . "</td><td>" . $user_win_loss_streak[1] . "</td><td>" . $user_win_loss_streak[2] . "</td></tr>");
     	}
     	if ($first_pass == false) {
@@ -507,22 +529,27 @@
     }
     
     function view_bonus($ipl) {
+    	print ("<h3>Bonus 1:</h3>Choose your <b>top four teams</b> of the IPL table that make the playoffs. The teams MUST be in the order of their rankings<br/>");
+    	print ("Submit your choice over Whats'app by midnight Sun 14th Apr. Make any changes before then - last entry before deadline will be used<br/>");
+    	print ("..... .: Points = 2 -- If your team is in the top four AND in the rank you predicted<br/>");
+    	print ("..... .: Points = 1 -- If your team is in the top four BUT NOT in the rank you predicted<br/>");
+    	print ("..... .: Points = 0 -- If your team is NOT in the top 4<p/>");
         $first_pass = true;
         for ($i = 1; $i <= $ipl->mBonus->num_items; $i++) {
             if ($first_pass) {
                 print ("<table><tr><th colspan=4>Bonus: Current Teams Selected for each user</th></tr>");
-                print ("<tr><th>Player ............. </th><th>Team 1</th><th>Team 2</th><th>Team 3</th><th>Team 4</th></tr>");
+                print ("<tr><th>Player ............. </th><th>Team 1</th><th>Team 2</th><th>Team 3</th><th>Team 4</th><th>Last Submitted On</th></tr>");
                 $first_pass = false;
             }
             $bonus = $ipl->mBonus->arr[$i];
             $user = $ipl->mUsers->get_by_name($bonus[1]);
-            $user_link = make_user_link($user);
+            $user_link = make_user_link($ipl,$user);
             $team_link = array();
             for ($j = 0; $j < 4; $j++) {
                 $team = $ipl->mTeams->get_by_short_name($bonus[$j + 2]);
-                array_push($team_link,make_team_link($team));
+                array_push($team_link,make_team_link($ipl, $team, true));
             }
-            print ("<tr><td>" . $user_link . "</td><td>" . $team_link[0] . "</td><td>" . $team_link[1] . "</td><td>" . $team_link[2] . "</td><td>" . $team_link[3] . "</td></tr>");
+            print ("<tr><td>" . $user_link . "</td><td>" . $team_link[0] . "</td><td>" . $team_link[1] . "</td><td>" . $team_link[2] . "</td><td>" . $team_link[3] . "</td><td>" . $bonus[6] . "</tr>");
         }
     	if ($first_pass == false) {
     		print ("</table>");
@@ -530,7 +557,72 @@
     	echo "<hr/>";		
     }
 
-    if ($do_all_submit == true) {
+    function view_home_away_wins($ipl, $one_team_id = -1) {
+    	$home_away_wins = $ipl->mGames->get_home_away_wins();
+    	$home_wins = $home_away_wins['home_wins'];
+    	$away_wins = $home_away_wins['away_wins'];
+    	$home_win_counts = array();
+    	foreach ($home_wins as $home_team_name) {
+    		$team = $ipl->mTeams->get_by_name($home_team_name);
+			if (!isset($home_win_counts[$home_team_name])) {
+				$home_win_counts[$home_team_name] = 0;
+			}
+			$home_win_counts[$home_team_name] += 1;
+		}
+    	$away_win_counts = array();
+    	foreach ($away_wins as $away_team_name) {
+    		$team = $ipl->mTeams->get_by_name($away_team_name);
+			if (!isset($away_win_counts[$away_team_name])) {
+				$away_win_counts[$away_team_name] = 0;
+			}
+			$away_win_counts[$away_team_name] += 1;
+		}
+		
+		$first_pass = true;
+		for ($i=1; $i <= $ipl->mTeams->num_teams; $i++) {
+			if ($first_pass) {
+				$first_pass = false;
+                print ("<table border=1><tr><th colspan=3><h4>Home and Away wins</h4></th></tr>");
+                print ("<tr><th>Team</th><th>Home Wins.......</th><th>Away Wins</th></tr>");
+                $first_pass = false;
+            }
+			$team = $ipl->mTeams->arr[$i];
+			
+			if (!isset($home_win_counts[$team[1]])) $home_win_counts[$team[1]] = 0;
+			if (!isset($away_win_counts[$team[1]])) $away_win_counts[$team[1]] = 0;
+
+            $team_link = make_team_link($ipl, $team);
+			if (($one_team_id < 0) || ($one_team_id > 0 && $one_team_id == $team[0])) {
+				print ("<tr><td>" . $team_link . "</td><td>" . $home_win_counts[$team[1]] . "</td><td>" . $away_win_counts[$team[1]] . "</td></tr>");
+			}
+        }
+        if ($first_pass == false) {
+        	print ("</table>");
+        	echo "<hr/>";
+        }
+    }
+    
+    function build_url($ipl, $admin_mode, $submit, $arr, $link_text) {
+    	$this_url = $_SERVER['REQUEST_URI'];
+		$use_url = $this_url;
+		$url_cmd = "";
+		$base_url = strtok($this_url, "&");
+		$admin_url = "";
+		$fromlink_url = "&fromlink=";
+		
+    	if ($admin_mode) $admin_url = "&admin=";
+
+		if ($submit == "game_info") $url_cmd = "&game_info=&games=";
+		if ($submit == "user_info") $url_cmd = "&user_info=&users=";
+		if ($submit == "team_info") $url_cmd = "&team_info=&teams=";
+		if ($submit == "date_info") $url_cmd = "&date_info=&games=";	// yes, use the date from game
+
+		$use_url = $base_url . $fromlink_url . $url_cmd . $arr[0] . $admin_url;
+		$link_href = "<a href=\"". $use_url . "\">" . $link_text . "</a>";
+		return ($link_href);
+    }
+
+    if ($do_all_info == true) {
         view_all_info($ipl);
         $default_mode = false;
     }
@@ -551,27 +643,30 @@
         $default_mode = false;
     }
 
-    if ($do_date_submit) {
+    if ($do_date_info) {
         $cur_sel_game = $ipl->mGames->get_by_id($selected_game_id);
         $use_date = $cur_sel_game[1];
         view_games_on_date($ipl, $use_date);
         $default_mode = false;
     }
 
-    if ($do_game_submit) {
+    if ($do_game_info) {
         view_game_info($ipl, $selected_game_id);
         $default_mode = false;
 	}
 
-	if ($do_user_submit) {
+	if ($do_user_info) {
+		$use_user = $ipl->mUsers->get_by_id($selected_user_id);
+		print("<h5>" . $use_user[1] . "  YaMaVi Points:  " . $ipl->get_user_points($use_user) . "</h5><hr/>");
 		view_user_win_loss_streaks($ipl);
 		view_user_info($ipl, $selected_user_id);
         $default_mode = false;
 	}
 
-	if ($do_team_submit) {
+	if ($do_team_info) {
 	    $ipl->show_team_info($selected_team_id);
         echo "<hr/>";
+	    view_home_away_wins($ipl, $selected_team_id);
         $default_mode = false;
 	}
 
@@ -608,8 +703,8 @@
 	}
 
     if ($show_stats) {
-        make_link("&users=2","Yash");
         $default_mode = false;
+        view_home_away_wins($ipl);
     }
     
     if ($show_bonus) {
@@ -617,11 +712,15 @@
         $default_mode = false;
     }
     
+    if ($fromlink) {
+    	$default_mode = false;
+    }
+    
     if ($default_mode) {
         view_game_info($ipl, $selected_game_id);
         view_show_points_table($ipl);
     }
-    	
+
 ?>
 </td></tr></table>
 </div>
