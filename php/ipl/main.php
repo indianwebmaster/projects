@@ -466,18 +466,16 @@
 
 
     function view_ipl_points_table($ipl) {
-        $team_id = 0;
         $first_pass = true;
-        foreach ($ipl->get_ipl_points() as $point) {
-            $team_id += 1;
-            $team = $ipl->mTeams->arr[$team_id];
+        foreach ($ipl->get_sorted_ipl_points() as $point) {
+            $team = $point[0];
             $team_link = make_team_link($ipl, $team);
             if ($first_pass) {
                 print("<table border=1><tr><th colspan=4><h4>IPL Points table</h4></th><tr>");
                 print("<tr><th>Team</th><th>Points</th><th>Wins</th><th>Losses</th></tr>");
                 $first_pass = false;
             }
-            print ("<tr><td>$team_link</td><td>$point[1]</td><td>$point[0]</td><td>$point[2]</td></tr>"); 
+            print ("<tr><td>$team_link</td><td>$point[1]</td><td>$point[2]</td><td>$point[3]</td></tr>"); 
         }
         if ($first_pass == false) {
             print ("</table>");
@@ -529,15 +527,16 @@
     }
     
     function view_bonus($ipl) {
+    	print ("<table border=1><tr><td colspan=2>");
     	print ("<h3>Bonus 1:</h3>Choose your <b>top four teams</b> of the IPL table that make the playoffs. The teams MUST be in the order of their rankings<br/>");
-    	print ("Submit your choice over Whats'app by midnight Sun 14th Apr. Make any changes before then - last entry before deadline will be used<br/>");
+    	print ("Submit your choice over Whats'app <span class='bg-primary text-white'>by midnight Sun 14th Apr</span>. Make any changes before then - last entry before deadline will be used<br/>");
     	print ("..... .: Points = 2 -- If your team is in the top four AND in the rank you predicted<br/>");
     	print ("..... .: Points = 1 -- If your team is in the top four BUT NOT in the rank you predicted<br/>");
     	print ("..... .: Points = 0 -- If your team is NOT in the top 4<p/>");
         $first_pass = true;
         for ($i = 1; $i <= $ipl->mBonus->num_items; $i++) {
             if ($first_pass) {
-                print ("<table><tr><th colspan=4>Bonus: Current Teams Selected for each user</th></tr>");
+                print ("<table>");
                 print ("<tr><th>Player ............. </th><th>Team 1</th><th>Team 2</th><th>Team 3</th><th>Team 4</th><th>Last Submitted On</th></tr>");
                 $first_pass = false;
             }
@@ -554,7 +553,41 @@
     	if ($first_pass == false) {
     		print ("</table>");
     	}
-    	echo "<hr/>";		
+    	
+    	print ("</td></tr><tr><td>");
+    	print ("<h3>Bonus 2</h3>Choose your <b>top two teams</b> to play in the finals. The teams MUST be in the order of their rankings<br/>");
+    	print ("Submit your choice over Whats'app <span class='bg-primary text-white'>by midnight Sun 21st Apr</span>. Make any changes before then - last entry before deadline will be used<br/>");
+    	print ("..... .: Points = 2 -- For each team in top two AND in predicted rank<br/>");
+    	print ("..... .: Points = 1 -- For each team in top two BUT NOT in predicted rank<br/>");
+    	print ("..... .: Points = 0 -- If your team is NOT in the top two<p/>");
+    	print ("</td><td>");
+    	print ("<h3>Bonus 3:</h3>Choose your <b>Winning team</b><br/>");
+    	print ("Submit your choice over Whats'app <span class='bg-primary text-white'>by midnight Sun 21st Apr</span>. Make any changes before then - last entry before deadline will be used<br/>");
+    	print ("..... .: Points = 4 -- Correct winner predicted<br/>");
+    	print ("..... .: Points = 0 -- If your team is NOT the winning team<p/>");
+    	print ("</td></tr>");
+    	print ("<tr><td colspan=2>");
+        $first_pass = true;
+        for ($i = 1; $i <= $ipl->mBonus2->num_items; $i++) {
+            if ($first_pass) {
+                print ("<table>");
+                print ("<tr><th>Player ____________ </th><th>Finals Team 1______</th><th>Finals Team 2______</th><th>Winning Team______</th><th>Last Submitted On</th></tr>");
+                $first_pass = false;
+            }
+            $bonus = $ipl->mBonus2->arr[$i];
+            $user = $ipl->mUsers->get_by_name($bonus[1]);
+            $user_link = make_user_link($ipl,$user);
+            $team_link = array();
+            for ($j = 0; $j < 3; $j++) {
+                $team = $ipl->mTeams->get_by_short_name($bonus[$j + 2]);
+                array_push($team_link,make_team_link($ipl, $team, true));
+            }
+            print ("<tr><td>" . $user_link . "</td><td>" . $team_link[0] . "</td><td>" . $team_link[1] . "</td><td>" . $team_link[2] . "</td><td>" . $bonus[6] . "</tr>");
+        }
+    	if ($first_pass == false) {
+    		print ("</table>");
+    	}
+    	print ("</td></tr></table>");
     }
 
     function view_home_away_wins($ipl, $one_team_id = -1) {

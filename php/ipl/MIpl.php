@@ -12,11 +12,13 @@ class MIpl {
 	private $games_filepath = "games.dat";
 	private $bets_filepath = "bets.dat";
 	private $bonus_filepath = "bonus.dat";
+	private $bonus2_filepath = "bonus2.dat";
 	public $mUsers = null;
 	public $mTeams = null;
 	public $mGames = null;
 	public $mBets = null;
 	public $mBonus = null;
+	public $mBonus2 = null;
 
 	public function __construct($year) {
 		$this->year = $year;
@@ -25,6 +27,7 @@ class MIpl {
 		$this->games_filepath = "ipl" . $year . DIRECTORY_SEPARATOR  . "games.dat";
 		$this->bets_filepath = "ipl" . $year . DIRECTORY_SEPARATOR  . "bets.dat";
 		$this->bonus_filepath = "ipl" . $year . DIRECTORY_SEPARATOR  . "bonus.dat";
+		$this->bonus2_filepath = "ipl" . $year . DIRECTORY_SEPARATOR  . "bonus2.dat";
 	}
 
 	public function loadData() {
@@ -33,12 +36,14 @@ class MIpl {
 		$this->mGames = new MGames();
 		$this->mBets = new MBets();
         $this->mBonus = new MBonus();
+        $this->mBonus2 = new MBonus();
 
 		$this->mUsers->load($this->users_filepath);
 		$this->mTeams->load($this->teams_filepath);
 		$this->mGames->load($this->games_filepath);
 		$this->mBets->load($this->bets_filepath);
 		$this->mBonus->load($this->bonus_filepath);
+		$this->mBonus2->load($this->bonus2_filepath);
 	}
 
 	public function save() {
@@ -47,7 +52,7 @@ class MIpl {
 		$this->mGames->save($this->games_filepath);
 		$this->mBets->save($this->bets_filepath);
 		$this->mBonus->save($this->bonus_filepath);
-		
+		$this->mBonus2->save($this->bonus2_filepath);
 	}
 
 	public function set_winner($game, $team, &$err_string) {
@@ -288,8 +293,26 @@ class MIpl {
         return ($bets_on_game);
     }
 
+    public function get_sorted_ipl_points() {
+    	$ipl_points = $this->get_ipl_points();
+    	$num_items = count($ipl_points);
+    	$made_switch = true;
+    	while ($made_switch) {
+    		$made_switch = false;
+			for ($i=0; $i<($num_items - 1); $i++) {
+				if ($ipl_points[$i][1] < $ipl_points[$i + 1][1]) {
+					$made_switch = true;
+					$save_row = $ipl_points[$i];
+					$ipl_points[$i] = $ipl_points[$i + 1];
+					$ipl_points[$i + 1] = $save_row;
+				}
+			}	
+    	}
+    	return ($ipl_points);
+    }
+    
     public function get_ipl_points() {
-        $ipl_points = array_fill(0, $this->mTeams->num_teams, array_fill(0,3,0));
+        $ipl_points = array_fill(0, $this->mTeams->num_teams, array_fill(0,4,0));
         $winners_losers = $this->mGames->get_winners_losers();
         foreach ($winners_losers as $game_winner_loser) {
             $winning_team = $this->mTeams->get_by_name($game_winner_loser[1]);
@@ -297,10 +320,14 @@ class MIpl {
             $w_idx = $winning_team[0] - 1;
             $l_idx = $losing_team[0] - 1;
             
-            $ipl_points[$w_idx][0] += 1;
-            $ipl_points[$w_idx][1] += 2;
+            // Adding both winning and losing teams below at w_idx and l_idx will ensure the team name is
+            // in column 0 for all rows
+            $ipl_points[$w_idx][0] = $winning_team;	// team name
+            $ipl_points[$l_idx][0] = $losing_team;	// team name
 
-            $ipl_points[$l_idx][2] += 1;
+            $ipl_points[$w_idx][1] += 2;	// Points
+            $ipl_points[$w_idx][2] += 1;	// Wins
+            $ipl_points[$l_idx][3] += 1;	// Losses
         }
         return ($ipl_points);
     }
