@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<!-- Show a plane move across with a banner with text, on top of a canvas of fireworks -->
+<!-- 
+      Key variables: 
+        Fireworks background == canvas id="sky"
+        The plane == class="skywriter" img/src="https://i.stack.imgur.com/bGZ1m.png"
+        The banner == id="banner" (banner text = function fillBanner(selector, bannerText))
+        Timeout for fireworks animation == fireworks_animation_duration (30000ms (30s) to 3600000 ms (1h));
+-->
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Skywriter Animation</title>
+    <link rel="stylesheet" type="text/css" href="fireworks.css">
+  </head>
+  <body bgcolor="black">
+    <div id="viewport" style="width: 640px; height: 480px;">
+      <canvas id="sky" width="640" height="480"></canvas> <!-- Style: position=fixed. So it is in the background -->
+
+      <div class="skywriter">
+        <!-- <img src="https://i.stack.imgur.com/bGZ1m.png" width="80" height="43"> -->
+        <img src="plane2.png" width="100" height="50">
+        <div id="banner"></div>
+      </div>
+
+    </div>
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="fireworks.js"></script>
+    <script type="text/javascript">
+        $(function() {
+          var fireworks_animation_duration = 360000; // ms
+            fillBanner('#banner',"Hello World Again");
+            var anim = animate('#sky');
+            setTimeout(function() { anim.stop(); }, fireworks_animation_duration);
+        });
+    </script>
+  </body>
+</html>
