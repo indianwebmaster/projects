@@ -1,0 +1,124 @@
+# doRsync.shinc
+# Manoj Thakur    03-Sep-2017
+# -----------------------------------------------------------------------------------------
+# The purpose of this script is to provide a mechanism to perform backup from any unix based system
+# to another, using rsync.
+#
+# Rsync is traditionally used in the UNIX world, with the biggest advantage being that it collects the files
+# which are different between the "source" and "destination", and only "sync" those files across. This reduces
+# the network traffic and time for backup by a major factor, over the simple operation of simply copying the
+# files across, even those that are not different.
+#
+# With this script, you can specify multiple folders across the file system, and specify exclude sub-folders. The
+# actual task of traversing the folders and eliminating the exclude folders etc. is all managed in the script.
+#
+# The actual backup script would define one or all of the variables defined below. All variables should either be
+# defined or set to "". Then just source this script at the end of your backup script.
+#
+# The functions in this file, expect the following GLOBAL arrays defined
+#   gRemoteServer (set to "" for a local directory)
+#   gRemoteUser (only applicable when gRemoteServer is not "")
+#   gExportFileList
+#   gExportExcludeList
+#   gBackupBaseFolder
+#   gStaticFolderBase
+#   gStaticRelativeFolders
+#   gStaticFolders
+#   gExcludeStaticFolders
+#   gConfigFiles
+#   gConfigFolderPrefix
+#
+# -----------------------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------------------
+# A function to create a parent folder on the server, since rsync cannot create a dir tree
+# In: <remoteServer>    <dir or file path>
+# Operation: The parent folder of <dir or file path> will be created on <remoteServer> or
+#            current server, if remoteServer == "localhost"
+# -----------------------------------------------------------------------------------------
+createParentFolder()
+{
+    remoteServer=$1
+    parentFolder=`dirname "$2"`
+    if [ "x$remoteServer" != "x" -a "x$parentFolder" != "x" ]; then
+	if [ "x$remoteServer" = "xlocalhost" ]; then
+		mkdir -p "$parentFolder"
+	else
+        	ssh $remoteServer mkdir -p "$parentFolder"
+	fi
+    fi
+}
+
+# -----------------------------------------------------------------------------------------
+# Actually perform the rsync operation
+# -----------------------------------------------------------------------------------------
+# The "dry-run" line below will allow to dry-run the process without making any changes
+#RSYNC_CMD="rsync --dry-run -avz --exclude=/lost+found/ --delete"
+
+RSYNC_CMD="rsync -avz --exclude=/lost+found/ --delete"
+
+if [ "x$gRemoteServer" = "x" ]; then
+	gRemoteServer="localhost"
+	gRemoteUser="dummy"
+fi
+
+# First backup all the export file systems
+for efs in $gExportFileList
+do
+    # Is $efs in the exclude list
+    echo $gExportExcludeList | grep -w $efs > /dev/null 2>&1
+    if [ $? -eq 1 ]; then
+        # Not found in list, means we are ok to rsync
+        dirname=`basename $efs`
+
+        dest="${gBackupBaseFolder}/$dirname"
+
+        createParentFolder "$gRemoteServer" "$dest"
+	if [ "x$gRemoteServer" = "xlocalhost" ]; then
+		$RSYNC_CMD $efs/ "$dest"
+	else
+        	$RSYNC_CMD $efs/ ${gRemoteUser}@${gRemoteServer}:"$dest"
+	fi
+    else
+        echo "folder $efs was found in exclude list"
+    fi
+done
+
+# Next backup all the staticFolders
+# Build the static excludeList first
+excludeList=""
+for excludesf in $gExcludeStaticFolders
+do
+	excludeList="$excludeList --exclude $excludesf"
+done
+
+# cd to allow backup of folders with "relative dir"
+curdir=$PWD
+cd "${gStaticFolderBase}"
+
+for sf in $gStaticRelativeFolders $gStaticFolders
+do
+    dest="${gBackupBaseFolder}/${sf}"
+
+    createParentFolder ${gRemoteServer} "$dest"
+    if [ "x$gRemoteServer" = "xlocalhost" ]; then
+	$RSYNC_CMD $excludeList $sf/ "$dest"
+    else
+       	$RSYNC_CMD $excludeList sf/ ${gRemoteUser}@${gRemoteServer}:"$dest"
+    fi
+done
+
+# Finally backup all the config Files
+for cf in $gConfigFiles
+do
+    dest="${gBackupBaseFolder}/${gConfigFolderPrefix}${cf}"
+
+    createParentFolder ${gRemoteServer} "$dest"
+    if [ "x$gRemoteServer" = "xlocalhost" ]; then
+	$RSYNC_CMD $cf/ "$dest"
+    else
+       	$RSYNC_CMD $cf/ ${gRemoteUser}@${gRemoteServer}:"$dest"
+    fi
+done
+
+echo "Backup script $0 finished: `date`"
