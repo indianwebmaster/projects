@@ -282,8 +282,6 @@ class MCricket {
         }
         return ($win_points_table);
     }
-
-    // one_row = [ user_name bet_team bet_date ]
     public function get_bets_on_game($game_id, $short_name=true) {
         $bets_on_game = array();
         $idx = 0;

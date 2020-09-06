@@ -19,6 +19,8 @@ class MRules {
 				self::showRules_ipl2019($l_main_url, $l_logo_url);
 			} elseif ($tournament == 'odi_worldcup2019') {
 				self::showRules_odi_worldcup2019($l_main_url, $l_logo_url);
+			} elseif ($tournament == 'ipl2020') {
+				self::showRules_ipl2019($l_main_url, $l_logo_url);
 			} else {
 				$undefined = true;
 			}

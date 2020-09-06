@@ -35,7 +35,7 @@
         }
     } else { // user is logged in
         if (($mConfig->view_only == false) && ($mConfig->show_login_screen)) $_SESSION["admin"] = true;
-        if (isset($_SESSION['user'])) $login_username = $_SESSION['user'];
+        if (isset($_SESSION['user'])) $login_user = $_SESSION['user'];
 ?>
     <table border="1" width="100%"><tr height="800em"><td align="left" valign="top">
 <?php
@@ -128,9 +128,8 @@
         if (isset($_SESSION['user']) == false) {
             $selected_user = $cricket->mUsers->arr[$selected_user_id];
             $first_last_name = explode(' ', $selected_user[1]);
-            $login_username = strtolower($first_last_name[0]);
+            $login_user = strtolower($first_last_name[0]);
         }
-        $login_user = $cricket->mUsers->get_by_name($login_username);
 
         $dt_today = date('D M d');
         $dt = new DateTime($mConfig->bet_from_date, new DateTimeZone("America/New_York"));
@@ -156,7 +155,7 @@
     				<td>Game</td>
     				<td>User</td>
     				<td>Team</td>
-    <?php if ($admin_mode == true && is_superadmin($login_username, $mConfig->superadmins)) { ?>
+    <?php if ($admin_mode == true && is_superadmin($login_user, $mConfig->superadmins)) { ?>
     				<td>Bet Date</td>
     <?php } ?>
     			</tr>
@@ -227,7 +226,7 @@
     					</select>
     				</td>
     				<td>
-    <?php if ($admin_mode == true && is_superadmin($login_username, $mConfig->superadmins)) { ?>
+    <?php if ($admin_mode == true && is_superadmin($login_user, $mConfig->superadmins)) { ?>
     					<select name="date">
     						<?php
     							for ($i=0; $i<$mConfig->bet_num_days; $i++) {
@@ -267,7 +266,7 @@
     			<tr>
     				<td colspan="2">
                         <input type="hidden" name="admin">
-                        <?php if (($mConfig->view_only == false) && (is_superadmin($login_username, $mConfig->superadmins))) { ?>
+                        <?php if (($mConfig->view_only == false) && (is_superadmin($login_user, $mConfig->superadmins))) { ?>
     					   <input type="submit" class="btn btn-success" name="set_winner" value="Set Winner">
                         <?php } ?>
                         <?php if ($mConfig->view_only == false) { ?>
@@ -510,39 +509,7 @@
             echo "<hr/>";
         }
 
-        function get_bet_str_with_links ($cricket, $bet_user, $bet_team, $bet_date) {
-            global $login_user, $admin_mode, $login_username, $mConfig;
-            $login_uid = $login_user[0];
-
-            $uid = $bet_user[0];
-            if (($uid == $login_uid) || ($admin_mode == true && is_superadmin($login_username, $mConfig->superadmins))) {
-                $team = $cricket->mTeams->get_by_short_name($bet_team);
-                $use_team = make_team_link($cricket, $team, true);
-            } else {
-                $use_team = "***";
-            }
-            $user_link = make_user_link($cricket, $bet_user);
-            $bets_str = "<tr><td>" . $user_link . "</td><td>" . $use_team . "</td><td>" . $bet_date . "</td></tr>";
-            return $bets_str;
-        }
-
-        function get_bet_str($cricket, $bet_user, $bet_team, $bet_date) {
-            global $login_user, $admin_mode, $login_username, $mConfig;
-            $login_uid = $login_user[0];
-
-            $uid = $bet_user[0];
-            if (($uid == $login_uid) || ($admin_mode == true && is_superadmin($login_username, $mConfig->superadmins))) {
-                $use_team = $bet_team;
-            } else {
-                $use_team = "***";
-            }
-            $bets_str = ($cricket->mUsers->get_short_name($bet_user[1]) . "-" . $use_team . "-" . $bet_date);
-            return $bets_str;
-        }
-
         function view_show_upcoming_games($cricket, $num_days) {
-            global $selected_user_id, $login_username, $mConfig;
-
             $first_pass = true;
             foreach ($cricket->mGames->get_upcoming_games($num_days) as $game) {
                 if ($first_pass == true) {
@@ -552,8 +519,7 @@
                 }
                 $bets_str = "";
                 foreach ($cricket->get_bets_on_game($game[0]) as $one_bet) {
-                    $user = $cricket->mUsers->get_by_name($one_bet[0]);
-                    $bets_str .= get_bet_str($cricket, $user, $one_bet[1], $one_bet[2]) . "<br>";
+                    $bets_str .= ($cricket->mUsers->get_short_name($one_bet[0]) . "-" . $one_bet[1] . "-" . $one_bet[2] . "<br>");
                 }
                 $game_str = $cricket->mGames->get_game_string($game);
                 $game_link = make_game_link($cricket, $game);
@@ -623,8 +589,11 @@
                         $first_pass = false;
                     }
                     $user = $cricket->mUsers->get_by_name($one_bet[0]);
-                    $bets_str = get_bet_str_with_links($cricket, $user, $one_bet[1], $one_bet[2]);
-                    echo $bets_str;
+                    $user_link = make_user_link($cricket, $user);
+                    
+                    $team = $cricket->mTeams->get_by_short_name($one_bet[1]);
+                    $team_link = make_team_link($cricket, $team, true);
+                    echo "<tr><td>" . $user_link . "</td><td>" . $team_link . "</td><td>" . $one_bet[2] . "</td></tr>";
                 }
                 if ($first_pass == false) {
                     echo "</table>";
@@ -648,9 +617,6 @@
         }
 
         function view_user_info($cricket, $input_user_id) {
-            global $login_user, $admin_mode, $login_username, $mConfig;
-            $login_uid = $login_user[0];
-
             $win_percent_by_user = $cricket->get_win_percentage_by_user();
             $use_user = $cricket->mUsers->get_by_id($input_user_id);
             $uidx = $use_user[0] - 1;
@@ -681,12 +647,7 @@
                         $win_points = $cricket->get_user_game_win_points($game, $use_user);
                         $total_win_points += $win_points;
                         $game_link = make_game_link($cricket, $game);
-
-                        if (($input_user_id == $login_uid) || ($admin_mode == true && is_superadmin($login_username, $mConfig->superadmins))) {
-                            $team_link = make_team_link($cricket, $team, true);
-                        } else {
-                            $team_link = "***";
-                        }
+                        $team_link = make_team_link($cricket, $team, true);
                         echo "<tr><td>$game_id</td><td>$game_date</td><td>$game_link</td><td>$team_link</td><td>$bet_date</td><td>$win_points</td></tr>";
                     }
                 }
@@ -704,7 +665,7 @@
             foreach ($cricket->get_sorted_tournament_points() as $point) {
                 $team = $point[0];
                 // DRAW NOBODY WON
-                if ($team[2] == 'RCB' || $team[2] == 'RR' ) $point[1] += 1;
+                //if ($team[2] == 'RCB' || $team[2] == 'RR' ) $point[1] += 1;
 
                 $team_link = make_team_link($cricket, $team);
                 if ($first_pass) {
@@ -766,7 +727,7 @@
         function view_bonus($cricket) {
         	print ("<table border=1><tr><td colspan=2>");
         	print ("<h3>Bonus 1:</h3>Choose your <b>top four teams</b> that make the playoffs. The teams MUST be in the order of their rankings<br/>");
-        	print ("Submit your choice over Whats'app <span class='bg-primary text-white'>by midnight Sun 16th Jun</span>. Make any changes before then - last entry before deadline will be used<br/>");
+        	print ("Submit your choice over Whats'app <span class='bg-primary text-white'>by midnight Sun 18th Oct</span>. Make any changes before then - last entry before deadline will be used<br/>");
         	print ("..... .: Points = 2 -- If your team is in the top four AND in the rank you predicted<br/>");
         	print ("..... .: Points = 1 -- If your team is in the top four BUT NOT in the rank you predicted<br/>");
         	print ("..... .: Points = 0 -- If your team is NOT in the top 4<p/>");
@@ -793,13 +754,13 @@
         	
         	print ("</td></tr><tr><td>");
         	print ("<h3>Bonus 2</h3>Choose your <b>top two teams</b> to play in the finals. The teams MUST be in the order of their rankings WHEN THEY ENTERED THE PLAYOFFS<br/>");
-        	print ("Submit your choice over Whats'app <span class='bg-primary text-white'>by midnight Sun 23rd Jun</span>. Make any changes before then - last entry before deadline will be used<br/>");
+        	print ("Submit your choice over Whats'app <span class='bg-primary text-white'>by midnight Sun 25th Oct</span>. Make any changes before then - last entry before deadline will be used<br/>");
         	print ("..... .: Points = 2 -- For each team in top two AND in predicted rank<br/>");
         	print ("..... .: Points = 1 -- For each team in top two BUT NOT in predicted rank<br/>");
         	print ("..... .: Points = 0 -- If your team is NOT in the top two<p/>");
         	print ("</td><td>");
         	print ("<h3>Bonus 3:</h3>Choose your <b>Winning team</b><br/>");
-        	print ("Submit your choice over Whats'app <span class='bg-primary text-white'>by midnight Sun 23rd Jun</span>. Make any changes before then - last entry before deadline will be used<br/>");
+        	print ("Submit your choice over Whats'app <span class='bg-primary text-white'>by midnight Sun 25th Oct</span>. Make any changes before then - last entry before deadline will be used<br/>");
         	print ("..... .: Points = 4 -- Correct winner predicted<br/>");
         	print ("..... .: Points = 0 -- If your team is NOT the winning team<p/>");
         	print ("</td></tr>");
@@ -956,7 +917,7 @@
     		$use_user = $cricket->mUsers->get_by_id($selected_user_id); 
     		$use_game = $cricket->mGames->get_by_id($selected_game_id); 
     		$use_team = $cricket->mTeams->get_by_id($selected_team_id);
-            if (MFuncs::substring($use_user[1], $login_username, true) == false) {
+            if (MFuncs::substring($use_user[1], $login_user, true) == false) {
                 echo "<p><b>Invalid user.</b>You cannot place a bet for a another user</p>";
             } else {
                 if ($cricket->mBets->place_bet($use_game, $use_user, $use_team, $selected_date) == true) {

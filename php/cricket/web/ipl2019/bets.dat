@@ -1,0 +1,61 @@
+# game_id | user1 | bet team | bet date | user2 | bet team | bet date | 
+1 | Manoj Thakur | Chennai Super Kings | Thu Mar 21 | Yash Shah | Chennai Super Kings | Thu Mar 21 | Vikas Daryanani | Royal Challengers Bangalore | Thu Mar 21 | 
+2 | Manoj Thakur | Kolkata Knight Riders | Thu Mar 21 | Yash Shah | Kolkata Knight Riders | Thu Mar 21 | Vikas Daryanani | Kolkata Knight Riders | Thu Mar 21 | 
+3 | Manoj Thakur | Mumbai Indians | Thu Mar 21 | Vikas Daryanani | Mumbai Indians | Thu Mar 21 | Yash Shah | Delhi Capitals | Thu Mar 21 | 
+4 | Manoj Thakur | Kings XI Punjab | Fri Mar 22 | Vikas Daryanani | Kings XI Punjab | Sat Mar 23 | Yash Shah | Kings XI Punjab | Sat Mar 23 | 
+5 | Manoj Thakur | Delhi Capitals | Sun Mar 24 | Yash Shah | Delhi Capitals | Mon Mar 25 | Vikas Daryanani | Delhi Capitals | Sun Mar 24 | 
+6 | Manoj Thakur | Kolkata Knight Riders | Mon Mar 25 | Yash Shah | Kolkata Knight Riders | Mon Mar 25 | Vikas Daryanani | Kolkata Knight Riders | Mon Mar 25 | 
+7 | Manoj Thakur | Mumbai Indians | Mon Mar 25 | Vikas Daryanani | Mumbai Indians | Mon Mar 25 | Yash Shah | Royal Challengers Bangalore | Mon Mar 25 | 
+8 | Manoj Thakur | Rajasthan Royals | Tue Mar 26 | Yash Shah | Sunrisers Hyderabad | Mon Mar 25 | Vikas Daryanani | Sunrisers Hyderabad | Mon Mar 25 | 
+9 | Manoj Thakur | Mumbai Indians | Wed Mar 27 | Yash Shah | Mumbai Indians | Wed Mar 27 | Vikas Daryanani | Mumbai Indians | Thu Mar 28 | 
+10 | Manoj Thakur | Kolkata Knight Riders | Wed Mar 27 | Yash Shah | Kolkata Knight Riders | Wed Mar 27 | Vikas Daryanani | Kolkata Knight Riders | Thu Mar 28 | 
+11 | Manoj Thakur | Royal Challengers Bangalore | Thu Mar 28 | Vikas Daryanani | Royal Challengers Bangalore | Fri Mar 29 | Yash Shah | Sunrisers Hyderabad | Fri Mar 29 | 
+12 | Manoj Thakur | Chennai Super Kings | Thu Mar 28 | Vikas Daryanani | Chennai Super Kings | Fri Mar 29 | Yash Shah | Chennai Super Kings | Fri Mar 29 | 
+13 | Manoj Thakur | Kings XI Punjab | Sat Mar 30 | Vikas Daryanani | Kings XI Punjab | Sat Mar 30 | Yash Shah | Delhi Capitals | Sat Mar 30 | 
+14 | Yash Shah | Rajasthan Royals | Sun Mar 31 | Manoj Thakur | Rajasthan Royals | Sun Mar 31 | Vikas Daryanani | Rajasthan Royals | Sun Mar 31 | 
+15 | Manoj Thakur | Mumbai Indians | Mon Apr 01 | Vikas Daryanani | Mumbai Indians | Mon Apr 01 | Yash Shah | Mumbai Indians | Mon Apr 01 | 
+16 | Manoj Thakur | Sunrisers Hyderabad | Mon Apr 01 | Vikas Daryanani | Sunrisers Hyderabad | Mon Apr 01 | Yash Shah | Sunrisers Hyderabad | Mon Apr 01 | 
+17 | Manoj Thakur | Royal Challengers Bangalore | Mon Apr 01 | Yash Shah | Royal Challengers Bangalore | Tue Apr 02 | Vikas Daryanani | Royal Challengers Bangalore | Wed Apr 03 | 
+18 | Manoj Thakur | Chennai Super Kings | Thu Apr 04 | Vikas Daryanani | Chennai Super Kings | Thu Apr 04 | Yash Shah | Kings XI Punjab | Thu Apr 04 | 
+19 | Manoj Thakur | Mumbai Indians | Thu Apr 04 | Yash Shah | Sunrisers Hyderabad | Thu Apr 04 | Vikas Daryanani | Mumbai Indians | Thu Apr 04 | 
+20 | Manoj Thakur | Royal Challengers Bangalore | Fri Apr 05 | Vikas Daryanani | Royal Challengers Bangalore | Fri Apr 05 | Yash Shah | Royal Challengers Bangalore | Fri Apr 05 | 
+21 | Manoj Thakur | Kolkata Knight Riders | Fri Apr 05 | Vikas Daryanani | Kolkata Knight Riders | Fri Apr 05 | Yash Shah | Kolkata Knight Riders | Fri Apr 05 | 
+22 | Manoj Thakur | Sunrisers Hyderabad | Sat Apr 06 | Yash Shah | Sunrisers Hyderabad | Sat Apr 06 | Vikas Daryanani | Sunrisers Hyderabad | Sat Apr 06 | 
+24 | Vikas Daryanani | Mumbai Indians | Sat Apr 06 | Yash Shah | Mumbai Indians | Sun Apr 07 | Manoj Thakur | Mumbai Indians | Sun Apr 07 | 
+23 | Yash Shah | Kolkata Knight Riders | Sun Apr 07 | Manoj Thakur | Kolkata Knight Riders | Sun Apr 07 | Vikas Daryanani | Kolkata Knight Riders | Sun Apr 07 | 
+25 | Yash Shah | Chennai Super Kings | Sun Apr 07 | Manoj Thakur | Rajasthan Royals | Tue Apr 09 | Vikas Daryanani | Chennai Super Kings | Tue Apr 09 | 
+26 | Yash Shah | Kolkata Knight Riders | Sun Apr 07 | Vikas Daryanani | Kolkata Knight Riders | Tue Apr 09 | Manoj Thakur | Kolkata Knight Riders | Tue Apr 09 | 
+27 | Manoj Thakur | Mumbai Indians | Tue Apr 09 | Yash Shah | Mumbai Indians | Wed Apr 10 | Vikas Daryanani | Mumbai Indians | Thu Apr 11 | 
+28 | Yash Shah | Kings XI Punjab | Wed Apr 10 | Manoj Thakur | Royal Challengers Bangalore | Thu Apr 11 | Vikas Daryanani | Kings XI Punjab | Thu Apr 11 | 
+29 | Yash Shah | Chennai Super Kings | Wed Apr 10 | Manoj Thakur | Kolkata Knight Riders | Thu Apr 11 | Vikas Daryanani | Kolkata Knight Riders | Thu Apr 11 | 
+30 | Yash Shah | Sunrisers Hyderabad | Wed Apr 10 | Manoj Thakur | Sunrisers Hyderabad | Thu Apr 11 | Vikas Daryanani | Sunrisers Hyderabad | Thu Apr 11 | 
+31 | Manoj Thakur | Mumbai Indians | Sat Apr 13 | Yash Shah | Royal Challengers Bangalore | Sat Apr 13 | Vikas Daryanani | Mumbai Indians | Sat Apr 13 | 
+32 | Manoj Thakur | Kings XI Punjab | Sat Apr 13 | Yash Shah | Rajasthan Royals | Sat Apr 13 | Vikas Daryanani | Kings XI Punjab | Sat Apr 13 | 
+33 | Yash Shah | Chennai Super Kings | Sun Apr 14 | Manoj Thakur | Sunrisers Hyderabad | Mon Apr 15 | Vikas Daryanani | Sunrisers Hyderabad | Mon Apr 15 | 
+34 | Vikas Daryanani | Mumbai Indians | Mon Apr 15 | Manoj Thakur | Mumbai Indians | Tue Apr 16 | Yash Shah | Mumbai Indians | Tue Apr 16 | 
+35 | Vikas Daryanani | Kolkata Knight Riders | Tue Apr 16 | Manoj Thakur | Kolkata Knight Riders | Tue Apr 16 | Yash Shah | Kolkata Knight Riders | Tue Apr 16 | 
+36 | Manoj Thakur | Mumbai Indians | Wed Apr 17 | Vikas Daryanani | Mumbai Indians | Thu Apr 18 | Yash Shah | Mumbai Indians | Thu Apr 18 | 
+37 | Manoj Thakur | Kings XI Punjab | Wed Apr 17 | Vikas Daryanani | Kings XI Punjab | Thu Apr 18 | Yash Shah | Delhi Capitals | Thu Apr 18 | 
+38 | Manoj Thakur | Kolkata Knight Riders | Fri Apr 19 | Yash Shah | Sunrisers Hyderabad | Fri Apr 19 | Vikas Daryanani | Kolkata Knight Riders | Fri Apr 19 | 
+39 | Manoj Thakur | Chennai Super Kings | Fri Apr 19 | Yash Shah | Royal Challengers Bangalore | Fri Apr 19 | Vikas Daryanani | Chennai Super Kings | Fri Apr 19 | 
+40 | Manoj Thakur | Delhi Capitals | Sat Apr 20 | Vikas Daryanani | Rajasthan Royals | Sat Apr 20 | Yash Shah | Delhi Capitals | Sat Apr 20 | 
+41 | Yash Shah | Chennai Super Kings | Sun Apr 21 | Vikas Daryanani | Chennai Super Kings | Sun Apr 21 | Manoj Thakur | Sunrisers Hyderabad | Sun Apr 21 | 
+42 | Manoj Thakur | Kings XI Punjab | Mon Apr 22 | Yash Shah | Royal Challengers Bangalore | Mon Apr 22 | Vikas Daryanani | Royal Challengers Bangalore | Mon Apr 22 | 
+43 | Vikas Daryanani | Kolkata Knight Riders | Mon Apr 22 | Manoj Thakur | Kolkata Knight Riders | Tue Apr 23 | Yash Shah | Kolkata Knight Riders | Tue Apr 23 | 
+44 | Manoj Thakur | Mumbai Indians | Wed Apr 24 | Yash Shah | Mumbai Indians | Wed Apr 24 | Vikas Daryanani | Mumbai Indians | Wed Apr 24 | 
+45 | Vikas Daryanani | Sunrisers Hyderabad | Thu Apr 25 | Yash Shah | Rajasthan Royals | Thu Apr 25 | Manoj Thakur | Sunrisers Hyderabad | Fri Apr 26 | 
+46 | Manoj Thakur | Royal Challengers Bangalore | Fri Apr 26 | Vikas Daryanani | Royal Challengers Bangalore | Fri Apr 26 | Yash Shah | Delhi Capitals | Fri Apr 26 | 
+47 | Manoj Thakur | Mumbai Indians | Fri Apr 26 | Vikas Daryanani | Kolkata Knight Riders | Fri Apr 26 | Yash Shah | Mumbai Indians | Fri Apr 26 | 
+48 | Manoj Thakur | Sunrisers Hyderabad | Fri Apr 26 | Yash Shah | Sunrisers Hyderabad | Sat Apr 27 | Vikas Daryanani | Sunrisers Hyderabad | Sat Apr 27 | 
+49 | Manoj Thakur | Rajasthan Royals | Fri Apr 26 | Yash Shah | Rajasthan Royals | Sun Apr 28 | Vikas Daryanani | Rajasthan Royals | Sun Apr 28 | 
+50 | Manoj Thakur | Chennai Super Kings | Mon Apr 29 | Yash Shah | Delhi Capitals | Mon Apr 29 | Vikas Daryanani | Chennai Super Kings | Mon Apr 29 | 
+51 | Manoj Thakur | Mumbai Indians | Mon Apr 29 | Vikas Daryanani | Mumbai Indians | Mon Apr 29 | Yash Shah | Mumbai Indians | Tue Apr 30 | 
+52 | Manoj Thakur | Kings XI Punjab | Wed May 01 | Vikas Daryanani | Kolkata Knight Riders | Mon Apr 29 | Yash Shah | Kolkata Knight Riders | Wed May 01 | 
+53 | Manoj Thakur | Rajasthan Royals | Thu May 02 | Yash Shah | Delhi Capitals | Thu May 02 | Vikas Daryanani | Delhi Capitals | Thu May 02 | 
+54 | Manoj Thakur | Royal Challengers Bangalore | Thu May 02 | Vikas Daryanani | Royal Challengers Bangalore | Thu May 02 | Yash Shah | Royal Challengers Bangalore | Thu May 02 | 
+55 | Manoj Thakur | Chennai Super Kings | Fri May 03 | Yash Shah | Chennai Super Kings | Fri May 03 | Vikas Daryanani | Chennai Super Kings | Fri May 03 | 
+56 | Manoj Thakur | Mumbai Indians | Fri May 03 | Vikas Daryanani | Mumbai Indians | Fri May 03 | Yash Shah | Mumbai Indians | Fri May 03 | 
+57 | Manoj Thakur | Mumbai Indians | Mon May 06 | Vikas Daryanani | Mumbai Indians | Sun May 05 | Yash Shah | Mumbai Indians | Sun May 05 | 
+58 | Yash Shah | Delhi Capitals | Mon May 06 | Vikas Daryanani | Delhi Capitals | Mon May 06 | Manoj Thakur | Sunrisers Hyderabad | Tue May 07 | 
+59 | Manoj Thakur | Chennai Super Kings | Wed May 08 | Yash Shah | Delhi Capitals | Wed May 08 | Vikas Daryanani | Chennai Super Kings | Wed May 08 | 
+60 | Manoj Thakur | Mumbai Indians | Fri May 10 | Yash Shah | Mumbai Indians | Fri May 10 | Vikas Daryanani | Chennai Super Kings | Fri May 10 | 

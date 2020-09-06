@@ -31,6 +31,8 @@ class MConfig {
 			$this->initvars_odi_worldcup2019();
 		} elseif ($tournament == 't20_worldcup2020') {
 			$this->initvars_t20_worldcup2020();
+		} elseif ($tournament == 'ipl2020') {
+			$this->initvars_ipl2020();
 		}
 		$this->rewritevars();
 	}
@@ -56,7 +58,7 @@ class MConfig {
 
 		$this->logf = "./yamavi.log";
 
-		$this->tournament_title = '__TOURNAMENT_TITLE__';
+		$this->tournament_title = "__TOURNAMENT_TITLE__";
 		$this->datadir='__DATADIR__';
 
 		$this->background_img=$this->datadir . '/img/bg.jpg';
@@ -98,19 +100,39 @@ class MConfig {
 		$this->yamavi_winner = "Yash Shah";
 	}
 
+	private function initvars_ipl2020() {
+		$this->main_url = "./index_ipl2020.php";
+		
+		$this->tournament_title = "Vivo IPL 2020";
+		$this->datadir='ipl2020';
+
+		$this->schedule_url = "Schedule (<a href='https://www.iplt20.com/schedule' target='_blank'>by Date</a>";
+		$this->squad_url = "<a href='https://www.iplt20.com/teams' target='_blank'>Players</a>";
+
+		$this->bet_from_date='2020-09-18 00:00:00';
+		$this->bet_num_days=53;
+
+		$this->show_home_away_wins = true;
+
+		$this->show_login_screen = true;
+
+		$this->view_only = false;
+		$this->yamavi_winner = "Nobody_Yet";
+	}
+
 	private function initvars_odi_worldcup2019() {
 		$this->main_url = "./index_odi_worldcup2019.php";
 		
 		$this->tournament_title = "ICC ODI Cricket World Cup 2019";
 		$this->datadir='odi_worldcup2019';
 
-		$this->schedule_url = "Schedule (<a href='" . $this->datadir . "/img/sched1.jpg' target='_blank'>by Date</a> / <a href='" . $this->datadir . "/img/sched2.jpg' target='_blank'>Venue</a>)";
+		$this->schedule_url = "Schedule (<a href='" . $this->datadir . "'/img/sched1.jpg' target='_blank'>by Date</a> / <a href='" . $this->datadir . "'/img/sched2.png' target='_blank'>Venue</a>)";
 		$this->squad_url = "<a href='https://www.cricbuzz.com/cricket-series/2697/icc-cricket-world-cup-2019/squads' target='_blank'>Players</a>";
 
 		$this->bet_from_date='2019-05-1 00:00:00';
 		$this->bet_num_days=76;
 
-		$this->superadmins = ['thakur'];
+		$this->superadmins = ['manoj'];
 		
 		$this->show_home_away_wins = false;
 
@@ -133,7 +155,7 @@ class MConfig {
 		$this->bet_from_date='2020-10-1 00:00:00';
 		$this->bet_num_days=46;
 
-		$this->superadmins = ['thakur'];
+		$this->superadmins = ['manoj'];
 		
 		$this->show_home_away_wins = false;
 
