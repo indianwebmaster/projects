@@ -33,6 +33,8 @@ class MConfig {
 			$this->initvars_t20_worldcup2020();
 		} elseif ($tournament == 'ipl2020') {
 			$this->initvars_ipl2020();
+		} elseif ($tournament == 'ipl2021') {
+			$this->initvars_ipl2021();
 		}
 		$this->rewritevars();
 	}
@@ -120,6 +122,28 @@ class MConfig {
 
 		$this->view_only = true;
 		$this->yamavi_winner = "Manoj Thakur";
+	}
+
+	private function initvars_ipl2021() {
+		$this->main_url = "./index_ipl2021.php";
+		
+		$this->tournament_title = "Vivo IPL 2021";
+		$this->datadir='ipl2021';
+
+		$this->schedule_url = "Schedule (<a href='https://www.iplt20.com/schedule' target='_blank'>by Date</a>";
+		$this->squad_url = "<a href='https://www.iplt20.com/teams' target='_blank'>Players</a>";
+
+		$this->bet_from_date='2021-04-01 00:00:00';
+		$this->bet_num_days=70;
+
+		$this->superadmins = ['manoj'];
+		
+		$this->show_home_away_wins = true;
+
+		$this->show_login_screen = true;
+
+		$this->view_only = false;
+		$this->yamavi_winner = "";
 	}
 
 	private function initvars_odi_worldcup2019() {
