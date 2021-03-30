@@ -109,15 +109,17 @@ class MConfig {
 		$this->schedule_url = "Schedule (<a href='https://www.iplt20.com/schedule' target='_blank'>by Date</a>";
 		$this->squad_url = "<a href='https://www.iplt20.com/teams' target='_blank'>Players</a>";
 
-		$this->bet_from_date='2020-09-18 00:00:00';
-		$this->bet_num_days=53;
+		$this->bet_from_date='2020-09-13 00:00:00';
+		$this->bet_num_days=70;
 
+		$this->superadmins = ['manoj'];
+		
 		$this->show_home_away_wins = true;
 
-		$this->show_login_screen = true;
+		$this->show_login_screen = false;
 
-		$this->view_only = false;
-		$this->yamavi_winner = "Nobody_Yet";
+		$this->view_only = true;
+		$this->yamavi_winner = "Manoj Thakur";
 	}
 
 	private function initvars_odi_worldcup2019() {
@@ -132,14 +134,12 @@ class MConfig {
 		$this->bet_from_date='2019-05-1 00:00:00';
 		$this->bet_num_days=76;
 
-		$this->superadmins = ['manoj'];
-		
 		$this->show_home_away_wins = false;
 
-		$this->show_login_screen = true;
+		$this->show_login_screen = false;
 
-		$this->view_only = false;
-		$this->yamavi_winner = "Nobody_Yet";
+		$this->view_only = true;
+		$this->yamavi_winner = "Yash";
 	}
 
 
