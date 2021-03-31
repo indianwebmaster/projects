@@ -130,8 +130,8 @@ class MConfig {
 		$this->tournament_title = "Vivo IPL 2021";
 		$this->datadir='ipl2021';
 
-		$this->schedule_url = "Schedule (<a href='https://www.iplt20.com/schedule' target='_blank'>by Date</a>";
-		$this->squad_url = "<a href='https://www.iplt20.com/teams' target='_blank'>Players</a>";
+		$this->schedule_url = "Schedule (<a href='https://www.iplt20.com/matches/schedule/men' target='_blank'>by Date</a>";
+		$this->squad_url = "<a href='https://www.iplt20.com/teams/men' target='_blank'>Players</a>";
 
 		$this->bet_from_date='2021-04-01 00:00:00';
 		$this->bet_num_days=70;

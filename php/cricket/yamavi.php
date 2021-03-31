@@ -24,8 +24,9 @@
             <table class='table table-sm table-responsive table-striped table-bordered'>
                 <tr class="table-primary"><th colspan=3>Leagues over the years</th></tr>
                 <tr class="table-info"><th>Year</th><th>Tournament</th><th>Winner</th></tr>
-                <tr><td>2020</td><td><a href="web/index_ipl2020.php">IPL 2020</a></td><td></td></tr>
-                <tr><td>2019</td><td><a href="web/index_odi_worldcup2019.php">ICC ODI World Cup 2019 in England</a></td><td></td></tr>
+                <tr><td>2021</td><td><a href="web/index_ipl2021.php">IPL 2021</a></td><td></td></tr>
+                <tr><td>2020</td><td><a href="web/index_ipl2020.php">IPL 2020</a></td><td>Manoj</td></tr>
+                <tr><td>2019</td><td><a href="web/index_odi_worldcup2019.php">ICC ODI World Cup 2019 in England</a></td><td>Yash</td></tr>
                 <tr><td>2019</td><td><a href="web/index_ipl2019.php">IPL 2019</a></td><td>Yash</td></tr>
                 <tr><td>2018</td><td><a href="ipl2018/ipl2018.pdf" target="_blank">IPL 2018</a></td><td>Vikas</td></tr>
                 <tr><td>2017</td><td><a href="ipl2017/ipl2017.pdf" target="_blank">IPL 2017</a></td><td>Manoj</td></tr>
