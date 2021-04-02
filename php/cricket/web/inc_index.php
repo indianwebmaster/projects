@@ -727,7 +727,7 @@
         function view_bonus($cricket) {
         	print ("<table border=1><tr><td colspan=2>");
         	print ("<h3>Bonus 1:</h3>Choose your <b>top four teams</b> that make the playoffs. The teams MUST be in the order of their rankings<br/>");
-        	print ("Submit your choice over Whats'app <span class='bg-primary text-white'>by midnight Sun 18th Oct</span>. Make any changes before then - last entry before deadline will be used<br/>");
+        	print ("Submit your choice over Whats'app <span class='bg-primary text-white'>by midnight Sun 2nd May</span>. Make any changes before then - last entry before deadline will be used<br/>");
         	print ("..... .: Points = 2 -- If your team is in the top four AND in the rank you predicted<br/>");
         	print ("..... .: Points = 1 -- If your team is in the top four BUT NOT in the rank you predicted<br/>");
         	print ("..... .: Points = 0 -- If your team is NOT in the top 4<p/>");
@@ -754,13 +754,13 @@
         	
         	print ("</td></tr><tr><td>");
         	print ("<h3>Bonus 2</h3>Choose your <b>top two teams</b> to play in the finals. The teams MUST be in the order of their rankings WHEN THEY ENTERED THE PLAYOFFS<br/>");
-        	print ("Submit your choice over Whats'app <span class='bg-primary text-white'>by midnight Sun 25th Oct</span>. Make any changes before then - last entry before deadline will be used<br/>");
+        	print ("Submit your choice over Whats'app <span class='bg-primary text-white'>by midnight Sun 16th May</span>. Make any changes before then - last entry before deadline will be used<br/>");
         	print ("..... .: Points = 2 -- For each team in top two AND in predicted rank<br/>");
         	print ("..... .: Points = 1 -- For each team in top two BUT NOT in predicted rank<br/>");
         	print ("..... .: Points = 0 -- If your team is NOT in the top two<p/>");
         	print ("</td><td>");
         	print ("<h3>Bonus 3:</h3>Choose your <b>Winning team</b><br/>");
-        	print ("Submit your choice over Whats'app <span class='bg-primary text-white'>by midnight Sun 25th Oct</span>. Make any changes before then - last entry before deadline will be used<br/>");
+        	print ("Submit your choice over Whats'app <span class='bg-primary text-white'>by midnight Sun 16th May</span>. Make any changes before then - last entry before deadline will be used<br/>");
         	print ("..... .: Points = 4 -- Correct winner predicted<br/>");
         	print ("..... .: Points = 0 -- If your team is NOT the winning team<p/>");
         	print ("</td></tr>");
