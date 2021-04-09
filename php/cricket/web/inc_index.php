@@ -423,8 +423,9 @@
         				}
     	        		array_push($y_array, $total_win_points);
         			}
-                    // DRAW NOBODY WON
-                    if ( $cricket->mBets->valid_team($game, $team) && $gi == 49) {
+                    // MAKE CHANGE HERE (1 of 2) FOR DRAWS WHEN NOBODY WINS
+					// Add the gi (game index) 
+                    if ( $cricket->mBets->valid_team($game, $team) && $gi == -1) {
                         $total_win_points += 1;
                         array_push($y_array, $total_win_points);
                     }
@@ -455,8 +456,9 @@
     				}
 	        		array_push($y_array, $total_win_points);
     			}
-                // DRAW NOBODY WON
-                if ($cricket->mBets->valid_team($game, $team) && $gi == 49) {
+                // MAKE CHANGE HERE (2 of 2) FOR DRAWS WHEN NOBODY WINS
+				// Add the gi (game index) 
+                if ($cricket->mBets->valid_team($game, $team) && $gi == -1) {
                     $total_win_points += 1;
                     array_push($y_array, $total_win_points);
                 }
